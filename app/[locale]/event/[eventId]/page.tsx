@@ -3,15 +3,21 @@ import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { CompetitionCard } from '@/components/CompetitionCard';
 import { ShareButton } from '@/components/ActionButtons';
 import { LiveBadge } from '@/components/LiveBadge';
+import { getTranslations } from 'next-intl/server';
+import { formatDate } from '@/lib/utils/dateTime';
 
 interface EventPageProps {
   params: Promise<{
     eventId: string;
+    locale: string;
   }>;
 }
 
 export default async function EventPage({ params }: EventPageProps) {
-  const { eventId } = await params;
+  const { eventId, locale } = await params;
+  const t = await getTranslations('event');
+  const tCommon = await getTranslations('common');
+  const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
 
   const events = await BiathlonAPI.getEvents('2526');
   const event = events.find((e) => e.EventId === eventId);
@@ -22,10 +28,10 @@ export default async function EventPage({ params }: EventPageProps) {
         <div className="text-center">
           <div className="text-6xl mb-4">❌</div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Événement non trouvé
+            {t('notFound')}
           </h2>
-          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
-            Retour à l'accueil
+          <Link href={`/${locale}`} className="text-blue-600 dark:text-blue-400 hover:underline">
+            {tCommon('backToEvents')}
           </Link>
         </div>
       </div>
@@ -39,28 +45,19 @@ export default async function EventPage({ params }: EventPageProps) {
     (comp) => BiathlonAPI.getRaceStatus(comp.StartTime) === 'live'
   );
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link
-            href="/"
+            href={`/${locale}`}
             className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-4"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Retour aux événements
+            {tCommon('backToEvents')}
           </Link>
 
           <div className="flex items-start justify-between gap-4">
@@ -85,7 +82,7 @@ export default async function EventPage({ params }: EventPageProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   <span>
-                    {formatDate(event.StartDate)} - {formatDate(event.EndDate)}
+                    {formatDate(event.StartDate, localeCode)} - {formatDate(event.EndDate, localeCode)}
                   </span>
                 </div>
               </div>
@@ -93,7 +90,7 @@ export default async function EventPage({ params }: EventPageProps) {
               <ShareButton
                 title={event.Description}
                 url={typeof window !== 'undefined' ? window.location.href : ''}
-                text={`Découvrez les compétitions de ${event.Description} sur Biathlon World Cup Tracker`}
+                text={t('shareText', { event: event.Description })}
               />
             </div>
           </div>
@@ -104,10 +101,10 @@ export default async function EventPage({ params }: EventPageProps) {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Compétitions
+            {t('competitions')}
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            {competitions.length} course{competitions.length > 1 ? 's' : ''} programmée{competitions.length > 1 ? 's' : ''}
+            {competitions.length} {locale === 'fr' ? (competitions.length > 1 ? 'courses programmées' : 'course programmée') : (competitions.length > 1 ? 'races scheduled' : 'race scheduled')}
           </p>
         </div>
 
@@ -115,7 +112,7 @@ export default async function EventPage({ params }: EventPageProps) {
           <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl shadow">
             <div className="text-6xl mb-4">📋</div>
             <p className="text-xl text-gray-600 dark:text-gray-400">
-              Aucune compétition disponible pour cet événement
+              {t('noCompetitions')}
             </p>
           </div>
         ) : (
@@ -125,6 +122,7 @@ export default async function EventPage({ params }: EventPageProps) {
                 key={competition.RaceId}
                 competition={competition}
                 eventId={eventId}
+                locale={locale}
               />
             ))}
           </div>

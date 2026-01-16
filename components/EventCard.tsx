@@ -1,27 +1,21 @@
 import Link from 'next/link';
 import { Event } from '@/lib/types/biathlon';
 import { LiveBadge } from './LiveBadge';
+import { formatDate } from '@/lib/utils/dateTime';
 
 interface EventCardProps {
   event: Event;
   hasLiveRace?: boolean;
+  locale: string;
 }
 
-export function EventCard({ event, hasLiveRace }: EventCardProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
-
-  const startDate = formatDate(event.StartDate);
-  const endDate = formatDate(event.EndDate);
+export function EventCard({ event, hasLiveRace, locale }: EventCardProps) {
+  const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
+  const startDate = formatDate(event.StartDate, localeCode);
+  const endDate = formatDate(event.EndDate, localeCode);
 
   return (
-    <Link href={`/event/${event.EventId}`} className="block h-full">
+    <Link href={`/${locale}/event/${event.EventId}`} className="block h-full">
       <div className="group relative h-full bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500">
         {hasLiveRace && <LiveBadge size="sm" position="absolute" />}
 
