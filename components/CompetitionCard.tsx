@@ -1,41 +1,41 @@
+'use client';
+
 import Link from 'next/link';
 import { Competition } from '@/lib/types/biathlon';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { LiveBadge } from './LiveBadge';
+import { formatDateTime } from '@/lib/utils/dateTime';
+import { useTranslations } from 'next-intl';
 
 interface CompetitionCardProps {
   competition: Competition;
   eventId: string;
+  locale: string;
 }
 
-export function CompetitionCard({ competition, eventId }: CompetitionCardProps) {
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+export function CompetitionCard({ competition, eventId, locale }: CompetitionCardProps) {
+  const t = useTranslations('status');
+  const tCommon = useTranslations('common');
+  const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
+  const formattedTime = formatDateTime(competition.StartTime, localeCode);
 
   const status = BiathlonAPI.getRaceStatus(competition.StartTime);
 
   const statusConfig = {
     upcoming: {
-      label: 'À venir',
+      label: t('upcoming'),
       bgColor: 'bg-white dark:bg-slate-800',
       borderColor: 'border-slate-200 dark:border-slate-700',
       statusColor: 'text-slate-600 dark:text-slate-400',
     },
     live: {
-      label: 'EN DIRECT',
+      label: t('live'),
       bgColor: 'bg-white dark:bg-slate-800',
       borderColor: 'border-red-200 dark:border-red-800',
       statusColor: 'text-red-600 dark:text-red-400',
     },
     finished: {
-      label: 'Terminée',
+      label: t('finished'),
       bgColor: 'bg-white dark:bg-slate-800',
       borderColor: 'border-slate-200 dark:border-slate-700',
       statusColor: 'text-slate-600 dark:text-slate-400',
@@ -45,7 +45,7 @@ export function CompetitionCard({ competition, eventId }: CompetitionCardProps) 
   const config = statusConfig[status];
 
   return (
-    <Link href={`/event/${eventId}/race/${competition.RaceId}`} className="block h-full">
+    <Link href={`/${locale}/event/${eventId}/race/${competition.RaceId}`} className="block h-full">
       <div className={`group relative h-full ${config.bgColor} rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border ${config.borderColor} hover:border-blue-400 dark:hover:border-blue-500`}>
         {status === 'live' && <LiveBadge size="sm" position="absolute" />}
 
@@ -64,7 +64,7 @@ export function CompetitionCard({ competition, eventId }: CompetitionCardProps) 
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="font-medium">{formatTime(competition.StartTime)}</span>
+              <span className="font-medium">{formattedTime}</span>
             </div>
 
             {competition.km && (
@@ -79,10 +79,10 @@ export function CompetitionCard({ competition, eventId }: CompetitionCardProps) 
 
           <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
             <span className={`text-xs font-medium ${config.statusColor}`}>
-              {status === 'live' ? 'En direct' : status === 'upcoming' ? 'À venir' : 'Terminée'}
+              {config.label}
             </span>
             <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400 text-sm font-medium group-hover:gap-2 transition-all">
-              <span>Voir</span>
+              <span>{tCommon('view')}</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

@@ -1,27 +1,25 @@
+'use client';
+
 import Link from 'next/link';
 import { Event } from '@/lib/types/biathlon';
 import { LiveBadge } from './LiveBadge';
+import { formatDate } from '@/lib/utils/dateTime';
+import { useTranslations } from 'next-intl';
 
 interface EventCardProps {
   event: Event;
   hasLiveRace?: boolean;
+  locale: string;
 }
 
-export function EventCard({ event, hasLiveRace }: EventCardProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
-
-  const startDate = formatDate(event.StartDate);
-  const endDate = formatDate(event.EndDate);
+export function EventCard({ event, hasLiveRace, locale }: EventCardProps) {
+  const t = useTranslations('common');
+  const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
+  const startDate = formatDate(event.StartDate, localeCode);
+  const endDate = formatDate(event.EndDate, localeCode);
 
   return (
-    <Link href={`/event/${event.EventId}`} className="block h-full">
+    <Link href={`/${locale}/event/${event.EventId}`} className="block h-full">
       <div className="group relative h-full bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500">
         {hasLiveRace && <LiveBadge size="sm" position="absolute" />}
 
@@ -57,10 +55,10 @@ export function EventCard({ event, hasLiveRace }: EventCardProps) {
           {event.Comp && event.Comp.length > 0 && (
             <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-700">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {event.Comp.length} course{event.Comp.length > 1 ? 's' : ''}
+                {event.Comp.length} {locale === 'fr' ? (event.Comp.length > 1 ? 'courses' : 'course') : (event.Comp.length > 1 ? 'races' : 'race')}
               </span>
               <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400 text-sm font-medium group-hover:gap-2 transition-all">
-                <span>Voir</span>
+                <span>{t('view')}</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>

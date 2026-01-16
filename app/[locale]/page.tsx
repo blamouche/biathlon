@@ -1,5 +1,7 @@
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { EventCard } from '@/components/EventCard';
+import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 // Fonction pour déterminer le statut d'un événement
 function getEventStatus(startDate: string, endDate: string): 'ongoing' | 'upcoming' | 'finished' {
@@ -16,7 +18,14 @@ function getEventStatus(startDate: string, endDate: string): 'ongoing' | 'upcomi
   }
 }
 
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations('home');
+  const tFooter = await getTranslations('footer');
   const eventsData = await BiathlonAPI.getEvents('2526');
 
   // Trier les événements : en cours > à venir > terminés
@@ -43,10 +52,10 @@ export default async function Home() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Biathlon World Cup
+                {t('title')}
               </h1>
               <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Saison 2025-2026
+                {t('season')}
               </p>
             </div>
           </div>
@@ -60,10 +69,10 @@ export default async function Home() {
           <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 border-slate-200 dark:border-slate-700">
             <div className="text-8xl mb-6 animate-pulse">⏳</div>
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              Chargement des événements
+              {t('loadingEvents')}
             </h3>
             <p className="text-slate-600 dark:text-slate-400">
-              Récupération des données de la Coupe du Monde...
+              {t('loadingDescription')}
             </p>
           </div>
         ) : (
@@ -79,14 +88,14 @@ export default async function Home() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                       </span>
-                      En cours
+                      {t('ongoing')}
                     </h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events
                       .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'ongoing')
                       .map((event) => (
-                        <EventCard key={event.EventId} event={event} hasLiveRace={true} />
+                        <EventCard key={event.EventId} event={event} hasLiveRace={true} locale={locale} />
                       ))}
                   </div>
                 </div>
@@ -97,14 +106,14 @@ export default async function Home() {
                 <div>
                   <div className="mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                      À venir
+                      {t('upcoming')}
                     </h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events
                       .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'upcoming')
                       .map((event) => (
-                        <EventCard key={event.EventId} event={event} />
+                        <EventCard key={event.EventId} event={event} locale={locale} />
                       ))}
                   </div>
                 </div>
@@ -115,14 +124,14 @@ export default async function Home() {
                 <div>
                   <div className="mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                      Terminés
+                      {t('finished')}
                     </h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events
                       .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'finished')
                       .map((event) => (
-                        <EventCard key={event.EventId} event={event} />
+                        <EventCard key={event.EventId} event={event} locale={locale} />
                       ))}
                   </div>
                 </div>
@@ -137,10 +146,10 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <p className="text-slate-400 text-sm mb-2">
-              🎯 Données officielles fournies par <span className="font-bold text-white">biathlonresults.com</span>
+              🎯 {tFooter('dataSource')} <span className="font-bold text-white">biathlonresults.com</span>
             </p>
             <p className="text-slate-500 text-xs">
-              © 2026 Biathlon World Cup Tracker • Tous droits réservés
+              © 2026 {tFooter('rights')}
             </p>
           </div>
         </div>

@@ -1,0 +1,52 @@
+{
+  "common": {
+    "season": "Saison {season}",
+    "backToEvents": "Retour aux événements",
+    "view": "Voir",
+    "share": "Partager",
+    "addToCalendar": "Ajouter au calendrier",
+    "loading": "Chargement..."
+  },
+  "home": {
+    "title": "Biathlon World Cup",
+    "season": "Saison 2025-2026",
+    "loadingEvents": "Chargement des événements",
+    "loadingDescription": "Récupération des données de la Coupe du Monde...",
+    "ongoing": "En cours",
+    "upcoming": "À venir",
+    "finished": "Terminés",
+    "noEvents": "Aucun événement disponible"
+  },
+  "event": {
+    "notFound": "Événement non trouvé",
+    "competitions": "Compétitions",
+    "racesCount": "{count} course | {count} courses",
+    "racesScheduled": "programmée | programmées",
+    "noCompetitions": "Aucune compétition disponible pour cet événement",
+    "shareText": "Découvrez les compétitions de {event} sur Biathlon World Cup Tracker"
+  },
+  "race": {
+    "notFound": "Course non trouvée",
+    "results": "Résultats",
+    "startList": "Liste de départ",
+    "noResults": "Aucun résultat disponible",
+    "noResultsDescription": "Les résultats seront affichés dès le début de la course",
+    "rank": "Rang",
+    "bib": "Doss.",
+    "name": "Nom",
+    "nation": "Nat.",
+    "shooting": "Tir",
+    "time": "Temps",
+    "behind": "Écart",
+    "shareText": "Suivez {race} en direct sur Biathlon World Cup Tracker"
+  },
+  "status": {
+    "upcoming": "À venir",
+    "live": "En direct",
+    "finished": "Terminée"
+  },
+  "footer": {
+    "dataSource": "Données officielles fournies par",
+    "rights": "Biathlon World Cup Tracker • Tous droits réservés"
+  }
+}
