@@ -5,57 +5,124 @@ export default async function Home() {
   const events = await BiathlonAPI.getEvents('2526');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-3">
-            <div className="text-4xl">🎿</div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Biathlon World Cup
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Coupe du Monde 2025-2026
-              </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950">
+      {/* Header avec design amélioré */}
+      <header className="relative bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 shadow-2xl sticky top-0 z-50 overflow-hidden">
+        {/* Décorations d'arrière-plan */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-white/5 rounded-full -ml-48 -mt-48"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-white/5 rounded-full -mr-36 -mb-36"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="text-6xl animate-float">🎿</div>
+              <div>
+                <h1 className="text-4xl font-black text-white mb-1 tracking-tight">
+                  Biathlon World Cup
+                </h1>
+                <div className="flex items-center gap-3">
+                  <span className="text-blue-100 text-base font-semibold">
+                    Saison 2025-2026
+                  </span>
+                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
+                    🔴 LIVE
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="hidden md:flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-white/80 text-xs font-medium">Dernière mise à jour</p>
+                <p className="text-white font-bold text-sm">
+                  {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Étapes de la saison
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Section d'introduction */}
+        <div className="mb-10 text-center">
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
+            ⛷️ Étapes de la Coupe du Monde
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Suivez toutes les étapes de la Coupe du Monde de biathlon en direct
+          <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+            Suivez toutes les étapes en direct avec résultats, classements et statistiques
           </p>
         </div>
 
         {events.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">⏳</div>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
-              Chargement des événements...
+          <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 border-slate-200 dark:border-slate-700">
+            <div className="text-8xl mb-6 animate-pulse">⏳</div>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+              Chargement des événements
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400">
+              Récupération des données de la Coupe du Monde...
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <EventCard key={event.EventId} event={event} />
-            ))}
-          </div>
+          <>
+            {/* Statistiques rapides */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-blue-100 text-sm font-semibold mb-1">Total des étapes</p>
+                    <p className="text-4xl font-black">{events.length}</p>
+                  </div>
+                  <div className="text-5xl opacity-50">📍</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-green-100 text-sm font-semibold mb-1">Courses totales</p>
+                    <p className="text-4xl font-black">
+                      {events.reduce((sum, e) => sum + (e.Comp?.length || 0), 0)}
+                    </p>
+                  </div>
+                  <div className="text-5xl opacity-50">🏁</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-purple-100 text-sm font-semibold mb-1">Pays participants</p>
+                    <p className="text-4xl font-black">40+</p>
+                  </div>
+                  <div className="text-5xl opacity-50">🌍</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Grille des événements */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.map((event) => (
+                <EventCard key={event.EventId} event={event} />
+              ))}
+            </div>
+          </>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 mt-16 border-t border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            Données fournies par biathlonresults.com
-          </p>
+      {/* Footer amélioré */}
+      <footer className="mt-20 bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 border-t-4 border-blue-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <p className="text-slate-400 text-sm mb-2">
+              🎯 Données officielles fournies par <span className="font-bold text-white">biathlonresults.com</span>
+            </p>
+            <p className="text-slate-500 text-xs">
+              © 2026 Biathlon World Cup Tracker • Tous droits réservés
+            </p>
+          </div>
         </div>
       </footer>
     </div>
