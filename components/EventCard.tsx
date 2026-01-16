@@ -1,7 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import { Event } from '@/lib/types/biathlon';
 import { LiveBadge } from './LiveBadge';
 import { formatDate } from '@/lib/utils/dateTime';
+import { useTranslations } from 'next-intl';
 
 interface EventCardProps {
   event: Event;
@@ -10,6 +13,7 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, hasLiveRace, locale }: EventCardProps) {
+  const t = useTranslations('common');
   const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
   const startDate = formatDate(event.StartDate, localeCode);
   const endDate = formatDate(event.EndDate, localeCode);
@@ -51,10 +55,10 @@ export function EventCard({ event, hasLiveRace, locale }: EventCardProps) {
           {event.Comp && event.Comp.length > 0 && (
             <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-700">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {event.Comp.length} course{event.Comp.length > 1 ? 's' : ''}
+                {event.Comp.length} {locale === 'fr' ? (event.Comp.length > 1 ? 'courses' : 'course') : (event.Comp.length > 1 ? 'races' : 'race')}
               </span>
               <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400 text-sm font-medium group-hover:gap-2 transition-all">
-                <span>Voir</span>
+                <span>{t('view')}</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>

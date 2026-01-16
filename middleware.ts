@@ -8,8 +8,8 @@ export default createMiddleware({
   // Langue par défaut
   defaultLocale: 'fr',
 
-  // Ne pas ajouter de préfixe pour la langue par défaut dans l'URL
-  localePrefix: 'as-needed',
+  // Toujours inclure le préfixe de locale dans l'URL
+  localePrefix: 'always',
 });
 
 export const config = {

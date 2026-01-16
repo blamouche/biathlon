@@ -23,7 +23,7 @@ export function formatDate(
 /**
  * Formats a datetime string with proper timezone handling
  * The API returns times in the local timezone of the event.
- * We need to display them in the user's local timezone.
+ * We display them as-is (the browser will interpret them in the user's local timezone).
  *
  * @param dateString - ISO date string from the API
  * @param locale - Locale for formatting (e.g., 'fr-FR', 'en-US')
@@ -44,7 +44,6 @@ export function formatDateTime(
     month: 'long',
     hour: '2-digit',
     minute: '2-digit',
-    timeZoneName: 'short',
     ...options,
   };
 

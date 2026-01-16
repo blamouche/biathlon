@@ -14,9 +14,18 @@ export default function LanguageSwitcher() {
   const switchLocale = (newLocale: string) => {
     startTransition(() => {
       // Remplacer la locale dans le pathname
-      const segments = pathname.split('/');
-      segments[1] = newLocale;
-      const newPath = segments.join('/');
+      // Le pathname contient déjà la locale (ex: /fr/event/123)
+      const segments = pathname.split('/').filter(Boolean);
+
+      // Si le premier segment est une locale, on la remplace
+      if (segments[0] === 'fr' || segments[0] === 'en') {
+        segments[0] = newLocale;
+      } else {
+        // Sinon on ajoute la locale au début
+        segments.unshift(newLocale);
+      }
+
+      const newPath = '/' + segments.join('/');
       router.replace(newPath);
       setIsOpen(false);
     });
