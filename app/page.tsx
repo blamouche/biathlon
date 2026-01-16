@@ -1,9 +1,39 @@
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { EventCard } from '@/components/EventCard';
-import { BiathlonMapWrapper } from '@/components/BiathlonMapWrapper';
+
+// Fonction pour déterminer le statut d'un événement
+function getEventStatus(startDate: string, endDate: string): 'ongoing' | 'upcoming' | 'finished' {
+  const now = new Date();
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (now >= start && now <= end) {
+    return 'ongoing';
+  } else if (now < start) {
+    return 'upcoming';
+  } else {
+    return 'finished';
+  }
+}
 
 export default async function Home() {
-  const events = await BiathlonAPI.getEvents('2526');
+  const eventsData = await BiathlonAPI.getEvents('2526');
+
+  // Trier les événements : en cours > à venir > terminés
+  const events = [...eventsData].sort((a, b) => {
+    const statusA = getEventStatus(a.StartDate, a.EndDate);
+    const statusB = getEventStatus(b.StartDate, b.EndDate);
+
+    const statusOrder = { ongoing: 0, upcoming: 1, finished: 2 };
+
+    // Si les statuts sont différents, trier par statut
+    if (statusA !== statusB) {
+      return statusOrder[statusA] - statusOrder[statusB];
+    }
+
+    // Si même statut, trier par date de début
+    return new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime();
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950">
@@ -102,38 +132,67 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Carte des lieux de compétition */}
-            <div className="mb-12">
-              <div className="mb-6 text-center">
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight flex items-center justify-center gap-3">
-                  <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Carte des Compétitions
-                </h2>
-                <p className="text-slate-600 dark:text-slate-400 text-base">
-                  Explorez les lieux de compétition à travers l'Europe et le monde
-                </p>
-              </div>
-
-              <BiathlonMapWrapper events={events} />
-            </div>
-
             {/* Grille des événements */}
-            <div className="mb-6 text-center">
-              <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
-                Tous les Événements
-              </h2>
-              <p className="text-slate-600 dark:text-slate-400 text-base">
-                Cliquez sur un événement pour voir toutes les courses
-              </p>
-            </div>
+            <div className="space-y-12">
+              {/* Événements en cours */}
+              {events.filter(e => getEventStatus(e.StartDate, e.EndDate) === 'ongoing').length > 0 && (
+                <div>
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full shadow-lg">
+                      <span className="text-xl animate-pulse">🔴</span>
+                      <h3 className="text-xl font-black">EN COURS</h3>
+                    </div>
+                    <div className="h-1 flex-1 bg-gradient-to-r from-red-400 to-transparent rounded"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {events
+                      .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'ongoing')
+                      .map((event) => (
+                        <EventCard key={event.EventId} event={event} />
+                      ))}
+                  </div>
+                </div>
+              )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {events.map((event) => (
-                <EventCard key={event.EventId} event={event} />
-              ))}
+              {/* Événements à venir */}
+              {events.filter(e => getEventStatus(e.StartDate, e.EndDate) === 'upcoming').length > 0 && (
+                <div>
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
+                      <span className="text-xl">📅</span>
+                      <h3 className="text-xl font-black">À VENIR</h3>
+                    </div>
+                    <div className="h-1 flex-1 bg-gradient-to-r from-blue-400 to-transparent rounded"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {events
+                      .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'upcoming')
+                      .map((event) => (
+                        <EventCard key={event.EventId} event={event} />
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Événements terminés */}
+              {events.filter(e => getEventStatus(e.StartDate, e.EndDate) === 'finished').length > 0 && (
+                <div>
+                  <div className="mb-6 flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-gradient-to-r from-slate-500 to-slate-600 text-white px-4 py-2 rounded-full shadow-lg">
+                      <span className="text-xl">✅</span>
+                      <h3 className="text-xl font-black">TERMINÉS</h3>
+                    </div>
+                    <div className="h-1 flex-1 bg-gradient-to-r from-slate-400 to-transparent rounded"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {events
+                      .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'finished')
+                      .map((event) => (
+                        <EventCard key={event.EventId} event={event} />
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}
