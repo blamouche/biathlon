@@ -36,54 +36,25 @@ export default async function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-950">
-      {/* Header avec design amélioré */}
-      <header className="relative bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 shadow-2xl sticky top-0 z-50 overflow-hidden">
-        {/* Décorations d'arrière-plan */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-white/5 rounded-full -ml-48 -mt-48"></div>
-        <div className="absolute bottom-0 right-0 w-72 h-72 bg-white/5 rounded-full -mr-36 -mb-36"></div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      {/* Header simplifié */}
+      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <h1 className="text-4xl font-black text-white mb-1 tracking-tight">
-                  Biathlon World Cup
-                </h1>
-                <div className="flex items-center gap-3">
-                  <span className="text-blue-100 text-base font-semibold">
-                    Saison 2025-2026
-                  </span>
-                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
-                    🔴 LIVE
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="hidden md:flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-white/80 text-xs font-medium">Dernière mise à jour</p>
-                <p className="text-white font-bold text-sm">
-                  {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
-                </p>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+                Biathlon World Cup
+              </h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                Saison 2025-2026
+              </p>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Section d'introduction */}
-        <div className="mb-10 text-center">
-          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Étapes de la Coupe du Monde
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
-            Suivez toutes les étapes en direct avec résultats, classements et statistiques
-          </p>
-        </div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {events.length === 0 ? (
           <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border-2 border-slate-200 dark:border-slate-700">
@@ -102,18 +73,20 @@ export default async function Home() {
               {/* Événements en cours */}
               {events.filter(e => getEventStatus(e.StartDate, e.EndDate) === 'ongoing').length > 0 && (
                 <div>
-                  <div className="mb-6 flex items-center gap-3">
-                    <div className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full shadow-lg">
-                      <span className="text-xl animate-pulse">🔴</span>
-                      <h3 className="text-xl font-black">EN COURS</h3>
-                    </div>
-                    <div className="h-1 flex-1 bg-gradient-to-r from-red-400 to-transparent rounded"></div>
+                  <div className="mb-4 flex items-center gap-3 pb-3 border-b border-slate-200 dark:border-slate-700">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                      </span>
+                      En cours
+                    </h3>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events
                       .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'ongoing')
                       .map((event) => (
-                        <EventCard key={event.EventId} event={event} />
+                        <EventCard key={event.EventId} event={event} hasLiveRace={true} />
                       ))}
                   </div>
                 </div>
@@ -122,14 +95,12 @@ export default async function Home() {
               {/* Événements à venir */}
               {events.filter(e => getEventStatus(e.StartDate, e.EndDate) === 'upcoming').length > 0 && (
                 <div>
-                  <div className="mb-6 flex items-center gap-3">
-                    <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
-                      <span className="text-xl">📅</span>
-                      <h3 className="text-xl font-black">À VENIR</h3>
-                    </div>
-                    <div className="h-1 flex-1 bg-gradient-to-r from-blue-400 to-transparent rounded"></div>
+                  <div className="mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                      À venir
+                    </h3>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events
                       .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'upcoming')
                       .map((event) => (
@@ -142,14 +113,12 @@ export default async function Home() {
               {/* Événements terminés */}
               {events.filter(e => getEventStatus(e.StartDate, e.EndDate) === 'finished').length > 0 && (
                 <div>
-                  <div className="mb-6 flex items-center gap-3">
-                    <div className="flex items-center gap-2 bg-gradient-to-r from-slate-500 to-slate-600 text-white px-4 py-2 rounded-full shadow-lg">
-                      <span className="text-xl">✅</span>
-                      <h3 className="text-xl font-black">TERMINÉS</h3>
-                    </div>
-                    <div className="h-1 flex-1 bg-gradient-to-r from-slate-400 to-transparent rounded"></div>
+                  <div className="mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                      Terminés
+                    </h3>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events
                       .filter(e => getEventStatus(e.StartDate, e.EndDate) === 'finished')
                       .map((event) => (
