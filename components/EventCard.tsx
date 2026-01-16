@@ -27,13 +27,10 @@ export function EventCard({ event }: EventCardProps) {
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
 
           <div className="relative z-10">
-            <div className="flex items-start justify-between mb-2">
-              <h3 className="text-xl font-bold text-white group-hover:scale-105 transition-transform duration-300 leading-tight">
-                {event.Description}
-              </h3>
-              <span className="text-3xl animate-float">🎿</span>
-            </div>
-            <p className="text-blue-100 text-sm font-medium mt-2">{event.Organizer}</p>
+            <h3 className="text-xl font-bold text-white group-hover:scale-105 transition-transform duration-300 leading-tight mb-2">
+              {event.Description}
+            </h3>
+            <p className="text-blue-100 text-sm font-medium">{event.Organizer}</p>
           </div>
         </div>
 
