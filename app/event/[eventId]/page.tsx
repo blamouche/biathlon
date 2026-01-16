@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { CompetitionCard } from '@/components/CompetitionCard';
+import { ShareButton } from '@/components/ActionButtons';
+import { LiveBadge } from '@/components/LiveBadge';
 
 interface EventPageProps {
   params: Promise<{
@@ -32,6 +34,11 @@ export default async function EventPage({ params }: EventPageProps) {
 
   const competitions = await BiathlonAPI.getCompetitions(eventId);
 
+  // Vérifier s'il y a des courses en live
+  const hasLiveRace = competitions.some(
+    (comp) => BiathlonAPI.getRaceStatus(comp.StartTime) === 'live'
+  );
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR', {
@@ -56,12 +63,16 @@ export default async function EventPage({ params }: EventPageProps) {
             Retour aux événements
           </Link>
 
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                {event.Description}
-              </h1>
-              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-start gap-3 mb-3">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {event.Description}
+                </h1>
+                {hasLiveRace && <LiveBadge position="relative" size="md" />}
+              </div>
+
+              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 flex-wrap mb-3">
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -78,6 +89,12 @@ export default async function EventPage({ params }: EventPageProps) {
                   </span>
                 </div>
               </div>
+
+              <ShareButton
+                title={event.Description}
+                url={typeof window !== 'undefined' ? window.location.href : ''}
+                text={`Découvrez les compétitions de ${event.Description} sur Biathlon World Cup Tracker`}
+              />
             </div>
           </div>
         </div>

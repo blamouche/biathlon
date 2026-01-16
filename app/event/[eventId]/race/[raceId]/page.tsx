@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
+import { DownloadICalButton, ShareButton } from '@/components/ActionButtons';
+import { LiveBadge } from '@/components/LiveBadge';
 
 interface RacePageProps {
   params: Promise<{
@@ -92,12 +94,16 @@ export default async function RacePage({ params }: RacePageProps) {
             Retour à l'événement
           </Link>
 
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                {competition.Description}
-              </h1>
-              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 flex-wrap">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-start gap-3 mb-3">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {competition.Description}
+                </h1>
+                {status === 'live' && <LiveBadge position="relative" size="md" />}
+              </div>
+
+              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 flex-wrap mb-3">
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -113,12 +119,21 @@ export default async function RacePage({ params }: RacePageProps) {
                   </div>
                 )}
               </div>
-            </div>
 
-            <span className={`${config.color} text-white px-4 py-2 rounded-full font-bold flex items-center gap-2 text-sm`}>
-              <span>{config.icon}</span>
-              <span>{config.description}</span>
-            </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <DownloadICalButton
+                  title={competition.Description}
+                  location={competition.Short || ''}
+                  startDate={competition.StartTime}
+                  description={`${competition.Description} - ${competition.km ? competition.km + ' km' : ''}`}
+                />
+                <ShareButton
+                  title={competition.Description}
+                  url={typeof window !== 'undefined' ? window.location.href : ''}
+                  text={`Regardez ${competition.Description} en live sur Biathlon World Cup Tracker`}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </header>
