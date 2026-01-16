@@ -1,5 +1,6 @@
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { EventCard } from '@/components/EventCard';
+import { BiathlonMapWrapper } from '@/components/BiathlonMapWrapper';
 
 export default async function Home() {
   const events = await BiathlonAPI.getEvents('2526');
@@ -15,7 +16,6 @@ export default async function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="text-6xl animate-float">🎿</div>
               <div>
                 <h1 className="text-4xl font-black text-white mb-1 tracking-tight">
                   Biathlon World Cup
@@ -48,7 +48,7 @@ export default async function Home() {
         {/* Section d'introduction */}
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            ⛷️ Étapes de la Coupe du Monde
+            Étapes de la Coupe du Monde
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
             Suivez toutes les étapes en direct avec résultats, classements et statistiques
@@ -102,7 +102,34 @@ export default async function Home() {
               </div>
             </div>
 
+            {/* Carte des lieux de compétition */}
+            <div className="mb-12">
+              <div className="mb-6 text-center">
+                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight flex items-center justify-center gap-3">
+                  <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Carte des Compétitions
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 text-base">
+                  Explorez les lieux de compétition à travers l'Europe et le monde
+                </p>
+              </div>
+
+              <BiathlonMapWrapper events={events} />
+            </div>
+
             {/* Grille des événements */}
+            <div className="mb-6 text-center">
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
+                Tous les Événements
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400 text-base">
+                Cliquez sur un événement pour voir toutes les courses
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event) => (
                 <EventCard key={event.EventId} event={event} />
