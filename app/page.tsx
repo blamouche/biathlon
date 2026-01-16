@@ -97,41 +97,6 @@ export default async function Home() {
           </div>
         ) : (
           <>
-            {/* Statistiques rapides */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-blue-100 text-sm font-semibold mb-1">Total des étapes</p>
-                    <p className="text-4xl font-black">{events.length}</p>
-                  </div>
-                  <div className="text-5xl opacity-50">📍</div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-green-100 text-sm font-semibold mb-1">Courses totales</p>
-                    <p className="text-4xl font-black">
-                      {events.reduce((sum, e) => sum + (e.Comp?.length || 0), 0)}
-                    </p>
-                  </div>
-                  <div className="text-5xl opacity-50">🏁</div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-purple-100 text-sm font-semibold mb-1">Pays participants</p>
-                    <p className="text-4xl font-black">40+</p>
-                  </div>
-                  <div className="text-5xl opacity-50">🌍</div>
-                </div>
-              </div>
-            </div>
-
             {/* Grille des événements */}
             <div className="space-y-12">
               {/* Événements en cours */}
