@@ -59,3 +59,35 @@ export enum RaceStatus {
   LIVE = 'live',
   FINISHED = 'finished'
 }
+
+export interface AthleteBio {
+  IBUId: string;
+  FamilyName: string;
+  GivenName: string;
+  Nat: string;
+  NatLong?: string;
+  Birthdate?: string;
+  GenderId?: string;
+}
+
+export interface AthleteResult {
+  RaceId: string;
+  EventId: string;
+  CompetitionName: string;
+  Location: string;
+  Date: string;
+  Rank: number | string;
+  TotalTime: string;
+  Behind: string;
+  ShootingTotal: string;
+  DisciplineId?: string;
+}
+
+export interface StandingsEntry {
+  Rank: number | string;
+  IBUId: string;
+  FamilyName: string;
+  GivenName: string;
+  Nat: string;
+  TotalScore: number;
+}
