@@ -155,8 +155,10 @@ export default async function RacePage({ params }: RacePageProps) {
       {/* Footer */}
       <div className="border-t border-green-500/30 bg-black/40 mt-12">
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center text-gray-500 text-xs">
+          <div className="text-center text-gray-500 text-xs space-y-1">
             <p>DATA SOURCE: BIATHLONRESULTS.COM • RACE ID: {raceId}</p>
+            <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
+            <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
           </div>
         </div>
       </div>
