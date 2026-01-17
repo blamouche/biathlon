@@ -339,6 +339,7 @@ export class BiathlonAPI {
         const athlete = athletesMap.get(result.IBUId);
         if (athlete) {
           athlete.ShootingTotal = result.ShootingTotal;
+          athlete.Shootings = result.Shootings; // Format "0+0" (prone+standing)
         }
       });
 

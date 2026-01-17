@@ -137,7 +137,8 @@ export interface ShootingAnalysis {
   RangeTime4?: string;       // Temps total au stand 4
   RangeTotalTime?: string;   // Temps total au stand
   // Résultats de tir
-  Shooting1?: string;        // ex: "5" (5 cibles touchées)
+  Shootings?: string;        // ex: "0+0" (prone+standing) ou "1+2" (1 erreur couché, 2 debout)
+  Shooting1?: string;        // ex: "5" (5 cibles touchées) - Rarement disponible
   Shooting2?: string;
   Shooting3?: string;
   Shooting4?: string;

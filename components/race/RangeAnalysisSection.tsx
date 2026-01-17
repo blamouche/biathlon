@@ -135,10 +135,7 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
                 <th className="border border-gray-700 px-2 py-1 text-left">BIB</th>
                 <th className="border border-gray-700 px-2 py-1 text-left">ATHLETE</th>
                 <th className="border border-gray-700 px-2 py-1 text-left">NAT</th>
-                <th className="border border-gray-700 px-2 py-1 text-center">STAND 1</th>
-                <th className="border border-gray-700 px-2 py-1 text-center">STAND 2</th>
-                <th className="border border-gray-700 px-2 py-1 text-center">STAND 3</th>
-                <th className="border border-gray-700 px-2 py-1 text-center">STAND 4</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">TIRS (P+S)</th>
                 <th className="border border-gray-700 px-2 py-1 text-center bg-yellow-600">ERREURS</th>
               </tr>
             </thead>
@@ -163,16 +160,7 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
                       <span className="font-semibold text-gray-100">{athlete.Nat}</span>
                     </td>
                     <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
-                      {athlete.Shooting1 || '-'}
-                    </td>
-                    <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
-                      {athlete.Shooting2 || '-'}
-                    </td>
-                    <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
-                      {athlete.Shooting3 || '-'}
-                    </td>
-                    <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
-                      {athlete.Shooting4 || '-'}
+                      {athlete.Shootings || '-'}
                     </td>
                     <td className={`border border-gray-700 px-2 py-1 text-center font-bold ${
                       totalMisses === 0 ? 'bg-green-900 text-green-200' : totalMisses > 3 ? 'bg-red-900 text-red-200' : 'bg-yellow-900 text-yellow-200'
@@ -184,6 +172,12 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
               })}
             </tbody>
           </table>
+          <div className="mt-4 p-4 bg-gray-800 border border-gray-700 rounded">
+            <p className="text-sm text-gray-300">
+              <strong className="text-white">Format TIRS:</strong> Les résultats de tir sont affichés au format "P+S"
+              (Prone/Couché + Standing/Debout). Par exemple, "0+1" signifie 0 erreur en position couchée et 1 erreur en position debout.
+            </p>
+          </div>
         </div>
       </div>
     </div>
