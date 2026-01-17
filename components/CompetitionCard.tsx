@@ -11,14 +11,13 @@ interface CompetitionCardProps {
   competition: Competition;
   eventId: string;
   locale: string;
-  utcOffset: number;
 }
 
-export function CompetitionCard({ competition, eventId, locale, utcOffset }: CompetitionCardProps) {
+export function CompetitionCard({ competition, eventId, locale }: CompetitionCardProps) {
   const t = useTranslations('status');
   const tCommon = useTranslations('common');
   const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
-  const formattedTime = formatDateTime(competition.StartTime, localeCode, utcOffset);
+  const formattedTime = formatDateTime(competition.StartTime, localeCode);
 
   const status = BiathlonAPI.getRaceStatus(competition.StartTime);
 
