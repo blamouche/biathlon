@@ -3,6 +3,7 @@
 import { BiathlonAPI } from '@/lib/api/biathlon-api'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { generateICalFile, downloadICalFile } from '@/lib/utils/calendar'
 
 interface Competition {
   RaceId: string
@@ -111,10 +112,23 @@ export default function MarketTable({
               countdown = 'CLOSED'
             }
 
+            const handleDownloadCalendar = (e: React.MouseEvent) => {
+              e.preventDefault()
+              e.stopPropagation()
+              const icalContent = generateICalFile(
+                comp.Description,
+                comp.eventName,
+                comp.StartTime,
+                undefined,
+                `${comp.Description} - ${comp.eventName}`
+              )
+              const filename = comp.Description.replace(/[^a-z0-9]/gi, '-').toLowerCase()
+              downloadICalFile(icalContent, filename)
+            }
+
             return (
-              <Link
+              <div
                 key={comp.RaceId}
-                href={`/${locale}/event/${comp.eventId}/race/${comp.RaceId}`}
                 className={`grid grid-cols-12 gap-4 p-4 ${statusBg} transition-all text-sm font-mono`}
               >
                 <div className={`col-span-1 text-center text-xl ${statusColor}`}>
@@ -125,14 +139,17 @@ export default function MarketTable({
                   {String(index + 1).padStart(2, '0')}
                 </div>
 
-                <div className="col-span-4">
+                <Link
+                  href={`/${locale}/event/${comp.eventId}/race/${comp.RaceId}`}
+                  className="col-span-4 hover:text-cyan-400 transition-colors"
+                >
                   <div className="text-white font-bold text-sm">
                     {comp.eventName}
                   </div>
                   <div className="text-gray-400 text-xs mt-1">
                     {comp.Description}
                   </div>
-                </div>
+                </Link>
 
                 <div className="col-span-2 text-cyan-400">
                   {startTime.toLocaleString(locale, {
@@ -151,22 +168,41 @@ export default function MarketTable({
                   {countdown}
                 </div>
 
-                <div className="col-span-2 text-right">
-                  {status === 'live' ? (
-                    <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/50 text-xs">
-                      WATCH
-                    </span>
-                  ) : status === 'upcoming' ? (
-                    <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 text-xs">
-                      PENDING
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 bg-gray-700/20 text-gray-500 border border-gray-700/50 text-xs">
-                      RESULTS
-                    </span>
-                  )}
+                <div className="col-span-2 text-right flex items-center justify-end gap-2">
+                  <button
+                    onClick={handleDownloadCalendar}
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 text-xs hover:bg-cyan-500/30 transition-colors"
+                    title="Télécharger dans votre calendrier"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <span>AGENDA</span>
+                  </button>
+                  <Link
+                    href={`/${locale}/event/${comp.eventId}/race/${comp.RaceId}`}
+                  >
+                    {status === 'live' ? (
+                      <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/50 text-xs">
+                        WATCH
+                      </span>
+                    ) : status === 'upcoming' ? (
+                      <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 text-xs">
+                        PENDING
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1 bg-gray-700/20 text-gray-500 border border-gray-700/50 text-xs">
+                        RESULTS
+                      </span>
+                    )}
+                  </Link>
                 </div>
-              </Link>
+              </div>
             )
           })}
         </div>

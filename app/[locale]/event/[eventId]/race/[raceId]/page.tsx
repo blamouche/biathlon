@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
+import { DownloadICalButton } from '@/components/ActionButtons';
 
 interface RacePageProps {
   params: Promise<{
@@ -13,6 +14,8 @@ interface RacePageProps {
 export default async function RacePage({ params }: RacePageProps) {
   const { locale, eventId, raceId } = await params;
 
+  const events = await BiathlonAPI.getEvents('2526');
+  const event = events.find((e) => e.EventId === eventId);
   const competitions = await BiathlonAPI.getCompetitions(eventId);
   const competition = competitions.find((c) => c.RaceId === raceId);
 
@@ -110,6 +113,15 @@ export default async function RacePage({ params }: RacePageProps) {
                   <span>{competition.DisciplineId}</span>
                 </div>
               </div>
+            </div>
+
+            <div className="flex items-start">
+              <DownloadICalButton
+                title={competition.Description}
+                location={event?.ShortDescription || event?.Description || 'Biathlon World Cup'}
+                startDate={competition.StartTime}
+                description={`${competition.Short} - ${competition.DisciplineId}${competition.km ? ` (${competition.km}km)` : ''}`}
+              />
             </div>
           </div>
         </div>
