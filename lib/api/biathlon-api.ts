@@ -358,17 +358,13 @@ export class BiathlonAPI {
    */
   static async getCourseAnalysis(raceId: string): Promise<CourseAnalysisData | null> {
     try {
-      // Récupérer les temps de parcours (course times) et temps de tour (lap times)
+      // Récupérer les temps de tour (lap times)
+      // Note: Les TypeIds CRST1-5 n'existent pas dans l'API
+      // CRS1-12 correspondent aux temps de tour, mais seuls CRS1-3 sont disponibles pour les Sprints
       const [
-        courseTime1, courseTime2, courseTime3, courseTime4, courseTime5,
         lapTime1, lapTime2, lapTime3, lapTime4, lapTime5,
         totalCourseTime
       ] = await Promise.all([
-        this.getAnalyticResults(raceId, 'CRST1'),
-        this.getAnalyticResults(raceId, 'CRST2'),
-        this.getAnalyticResults(raceId, 'CRST3'),
-        this.getAnalyticResults(raceId, 'CRST4'),
-        this.getAnalyticResults(raceId, 'CRST5'),
         this.getAnalyticResults(raceId, 'CRS1'),
         this.getAnalyticResults(raceId, 'CRS2'),
         this.getAnalyticResults(raceId, 'CRS3'),
@@ -378,7 +374,7 @@ export class BiathlonAPI {
       ]);
 
       // Si aucune donnée n'est disponible
-      if (!courseTime1?.Results && !lapTime1?.Results) {
+      if (!lapTime1?.Results && !totalCourseTime?.Results) {
         return null;
       }
 
@@ -402,11 +398,6 @@ export class BiathlonAPI {
         });
       };
 
-      mergeResults(courseTime1, 'CourseTime1');
-      mergeResults(courseTime2, 'CourseTime2');
-      mergeResults(courseTime3, 'CourseTime3');
-      mergeResults(courseTime4, 'CourseTime4');
-      mergeResults(courseTime5, 'CourseTime5');
       mergeResults(lapTime1, 'LapTime1');
       mergeResults(lapTime2, 'LapTime2');
       mergeResults(lapTime3, 'LapTime3');
