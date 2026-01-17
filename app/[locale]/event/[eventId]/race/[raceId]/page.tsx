@@ -116,9 +116,8 @@ export default async function RacePage({ params }: RacePageProps) {
               </div>
             </div>
 
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
               <SharePageButton />
-            <div className="flex items-start">
               <DownloadICalButton
                 title={competition.Description}
                 location={event?.ShortDescription || event?.Description || 'Biathlon World Cup'}
