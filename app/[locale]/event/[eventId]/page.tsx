@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { formatDate } from '@/lib/utils/dateTime';
 import CompetitionList from '@/components/CompetitionList';
+import { SharePageButton } from '@/components/SharePageButton';
 
 interface EventPageProps {
   params: Promise<{
@@ -84,6 +85,10 @@ export default async function EventPage({ params }: EventPageProps) {
               <div className="text-gray-600 text-xs">
                 ORGANIZER: {event.Organizer}
               </div>
+            </div>
+
+            <div className="flex items-center">
+              <SharePageButton />
             </div>
           </div>
         </div>

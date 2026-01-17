@@ -4,6 +4,7 @@ import Link from 'next/link'
 import LiveTicker from '@/components/LiveTicker'
 import StatsGrid from '@/components/StatsGrid'
 import MarketTable from '@/components/MarketTable'
+import { SharePageButton } from '@/components/SharePageButton'
 
 export default async function DashboardPage({
   params,
@@ -60,6 +61,7 @@ export default async function DashboardPage({
               </p>
             </div>
             <div className="flex gap-2">
+              <SharePageButton />
               <Link
                 href={`/${locale}`}
                 className="px-4 py-2 border border-green-500/50 text-green-400 hover:bg-green-500/10 transition-colors text-sm"

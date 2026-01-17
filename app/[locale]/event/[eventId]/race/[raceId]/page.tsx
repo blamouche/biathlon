@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
+import { SharePageButton } from '@/components/SharePageButton';
 
 interface RacePageProps {
   params: Promise<{
@@ -110,6 +111,10 @@ export default async function RacePage({ params }: RacePageProps) {
                   <span>{competition.DisciplineId}</span>
                 </div>
               </div>
+            </div>
+
+            <div className="flex items-center">
+              <SharePageButton />
             </div>
           </div>
         </div>
