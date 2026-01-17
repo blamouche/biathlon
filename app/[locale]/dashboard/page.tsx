@@ -1,15 +1,17 @@
 import { BiathlonAPI } from '@/lib/api/biathlon-api'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import LiveTicker from '@/components/LiveTicker'
 import StatsGrid from '@/components/StatsGrid'
 import MarketTable from '@/components/MarketTable'
 
-export default async function Home({
+export default async function DashboardPage({
   params,
 }: {
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  const t = await getTranslations('dashboard')
 
   const events = await BiathlonAPI.getEvents()
 
@@ -53,8 +55,17 @@ export default async function Home({
               <h1 className="text-2xl font-bold text-green-400 tracking-wider">
                 BIATHLON LIVE MONITORING SYSTEM
               </h1>
+              <p className="text-xs text-gray-500 mt-1">
+                REAL-TIME DATA FEED • IBU OFFICIAL SOURCE • {new Date().toISOString()}
+              </p>
             </div>
             <div className="flex gap-2">
+              <Link
+                href={`/${locale}`}
+                className="px-4 py-2 border border-green-500/50 text-green-400 hover:bg-green-500/10 transition-colors text-sm"
+              >
+                [HOME]
+              </Link>
               <div className="px-4 py-2 border border-green-500/50 bg-green-500/5">
                 <span className="text-green-400 animate-pulse">● LIVE</span>
               </div>
