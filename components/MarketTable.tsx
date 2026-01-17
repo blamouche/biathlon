@@ -49,7 +49,7 @@ export default function MarketTable({
     <div className="space-y-4">
       <div className="border border-cyan-500/30 bg-black/40 p-4">
         <h2 className="text-cyan-400 text-lg font-bold tracking-wider">
-          [RACE MONITOR] - ACTIVE MARKETS
+          [RACE MONITOR]
         </h2>
       </div>
 
