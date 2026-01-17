@@ -114,6 +114,8 @@ export default async function EventPage({ params }: EventPageProps) {
             competitions={competitions}
             eventId={eventId}
             locale={locale}
+            eventName={event.Description}
+            eventLocation={event.ShortDescription}
           />
         )}
       </main>
