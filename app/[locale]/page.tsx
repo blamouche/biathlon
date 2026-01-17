@@ -3,6 +3,7 @@ import Link from 'next/link'
 import LiveTicker from '@/components/LiveTicker'
 import StatsGrid from '@/components/StatsGrid'
 import MarketTable from '@/components/MarketTable'
+import LiveTimestamp from '@/components/LiveTimestamp'
 
 export default async function Home({
   params,
@@ -13,16 +14,16 @@ export default async function Home({
 
   const events = await BiathlonAPI.getEvents()
 
-  // Récupérer toutes les compétitions pour les événements en cours
-  const liveEvents = events.filter(event => {
+  // Récupérer les compétitions pour les événements en cours ET à venir
+  const activeEvents = events.filter(event => {
     const now = new Date()
-    const start = new Date(event.StartDate)
     const end = new Date(event.EndDate)
-    return now >= start && now <= end
+    // Inclure les événements non encore terminés
+    return end >= now
   })
 
   const allCompetitions = await Promise.all(
-    liveEvents.map(async event => {
+    activeEvents.map(async event => {
       const competitions = await BiathlonAPI.getCompetitions(event.EventId)
       return competitions.map(comp => ({
         ...comp,
@@ -36,7 +37,12 @@ export default async function Home({
 
   // Calculer les statistiques
   const totalEvents = events.length
-  const liveEventsCount = liveEvents.length
+  const liveEventsCount = events.filter(event => {
+    const now = new Date()
+    const start = new Date(event.StartDate)
+    const end = new Date(event.EndDate)
+    return now >= start && now <= end
+  }).length
   const totalCompetitions = competitions.length
   const liveCompetitions = competitions.filter(comp => {
     const status = BiathlonAPI.getRaceStatus(comp.StartTime)
@@ -53,6 +59,9 @@ export default async function Home({
               <h1 className="text-2xl font-bold text-green-400 tracking-wider">
                 BIATHLON LIVE MONITORING SYSTEM
               </h1>
+              <p className="text-xs text-gray-500 mt-1">
+                REAL-TIME DATA FEED • IBU OFFICIAL SOURCE • <LiveTimestamp />
+              </p>
             </div>
             <div className="flex gap-2">
               <div className="px-4 py-2 border border-green-500/50 bg-green-500/5">

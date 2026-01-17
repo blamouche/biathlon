@@ -49,7 +49,7 @@ export default function MarketTable({
     <div className="space-y-4">
       <div className="border border-cyan-500/30 bg-black/40 p-4">
         <h2 className="text-cyan-400 text-lg font-bold tracking-wider">
-          [RACE MONITOR] - ACTIVE MARKETS
+          [RACE MONITOR]
         </h2>
       </div>
 
@@ -71,7 +71,8 @@ export default function MarketTable({
             const startTime = new Date(comp.StartTime)
             const now = time
             const diff = startTime.getTime() - now.getTime()
-            const diffMinutes = Math.floor(diff / 60000)
+            const diffSeconds = Math.floor(diff / 1000)
+            const diffMinutes = Math.floor(diffSeconds / 60)
             const diffHours = Math.floor(diffMinutes / 60)
             const diffDays = Math.floor(diffHours / 24)
 
@@ -94,11 +95,13 @@ export default function MarketTable({
             let countdown = ''
             if (status === 'upcoming') {
               if (diffDays > 0) {
-                countdown = `T-${diffDays}d ${diffHours % 24}h`
+                countdown = `T-${diffDays}d ${diffHours % 24}h ${diffMinutes % 60}m ${diffSeconds % 60}s`
               } else if (diffHours > 0) {
-                countdown = `T-${diffHours}h ${diffMinutes % 60}m`
+                countdown = `T-${diffHours}h ${diffMinutes % 60}m ${diffSeconds % 60}s`
               } else if (diffMinutes > 0) {
-                countdown = `T-${diffMinutes}m`
+                countdown = `T-${diffMinutes}m ${diffSeconds % 60}s`
+              } else if (diffSeconds > 0) {
+                countdown = `T-${diffSeconds}s`
               } else {
                 countdown = 'STARTING...'
               }
