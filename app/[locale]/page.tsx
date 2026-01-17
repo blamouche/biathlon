@@ -53,6 +53,9 @@ export default async function Home({
               <h1 className="text-2xl font-bold text-green-400 tracking-wider">
                 BIATHLON LIVE MONITORING SYSTEM
               </h1>
+              <p className="text-xs text-gray-500 mt-1">
+                REAL-TIME DATA FEED • IBU OFFICIAL SOURCE • {new Date().toISOString()}
+              </p>
             </div>
             <div className="flex gap-2">
               <div className="px-4 py-2 border border-green-500/50 bg-green-500/5">
