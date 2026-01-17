@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { formatDate } from '@/lib/utils/dateTime';
+import CompetitionList from '@/components/CompetitionList';
 
 interface EventPageProps {
   params: Promise<{
@@ -41,20 +42,6 @@ export default async function EventPage({ params }: EventPageProps) {
   const hasLiveRace = competitions.some(
     (comp) => BiathlonAPI.getRaceStatus(comp.StartTime) === 'live'
   );
-
-  // Trier les compétitions par statut et date
-  const sortedCompetitions = [...competitions].sort((a, b) => {
-    const statusA = BiathlonAPI.getRaceStatus(a.StartTime);
-    const statusB = BiathlonAPI.getRaceStatus(b.StartTime);
-
-    const statusOrder = { live: 0, upcoming: 1, finished: 2 };
-
-    if (statusA !== statusB) {
-      return statusOrder[statusA] - statusOrder[statusB];
-    }
-
-    return new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime();
-  });
 
   return (
     <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
@@ -118,112 +105,11 @@ export default async function EventPage({ params }: EventPageProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
-            {sortedCompetitions.map((competition, index) => {
-              const status = BiathlonAPI.getRaceStatus(competition.StartTime);
-              const startTime = new Date(competition.StartTime);
-              const now = new Date();
-              const diff = startTime.getTime() - now.getTime();
-              const diffMinutes = Math.floor(diff / 60000);
-              const diffHours = Math.floor(diffMinutes / 60);
-
-              let statusColor = 'text-gray-600';
-              let statusText = '○';
-              let statusBg = 'bg-gray-900/20';
-              let statusLabel = 'CLOSED';
-              let statusBorderColor = 'border-gray-700/50';
-
-              if (status === 'live') {
-                statusColor = 'text-green-400 animate-pulse';
-                statusText = '●';
-                statusBg = 'bg-green-500/10 hover:bg-green-500/20';
-                statusLabel = 'LIVE';
-                statusBorderColor = 'border-green-500/50';
-              } else if (status === 'upcoming') {
-                statusColor = 'text-yellow-400';
-                statusText = '◐';
-                statusBg = 'bg-yellow-500/5 hover:bg-yellow-500/10';
-                statusLabel = 'UPCOMING';
-                statusBorderColor = 'border-yellow-500/50';
-              }
-
-              let countdown = '';
-              if (status === 'upcoming') {
-                if (diffHours > 24) {
-                  const diffDays = Math.floor(diffHours / 24);
-                  countdown = `T-${diffDays}d ${diffHours % 24}h`;
-                } else if (diffHours > 0) {
-                  countdown = `T-${diffHours}h ${diffMinutes % 60}m`;
-                } else if (diffMinutes > 0) {
-                  countdown = `T-${diffMinutes}m`;
-                } else {
-                  countdown = 'STARTING...';
-                }
-              } else if (status === 'live') {
-                countdown = '▶ LIVE NOW';
-              } else {
-                countdown = 'FINISHED';
-              }
-
-              return (
-                <Link
-                  key={competition.RaceId}
-                  href={`/${locale}/event/${eventId}/race/${competition.RaceId}`}
-                  className={`block border ${statusBorderColor} ${statusBg} transition-all`}
-                >
-                  <div className="p-4 grid grid-cols-12 gap-4 items-center font-mono text-sm">
-                    <div className="col-span-1 text-gray-500 text-right">
-                      #{String(index + 1).padStart(2, '0')}
-                    </div>
-
-                    <div className="col-span-1 text-center">
-                      <span className={`text-xl ${statusColor}`}>{statusText}</span>
-                    </div>
-
-                    <div className="col-span-5">
-                      <div className="text-white font-bold">{competition.Description}</div>
-                      <div className="text-gray-500 text-xs mt-1">
-                        {competition.Short} • {competition.DisciplineId}
-                      </div>
-                    </div>
-
-                    <div className="col-span-2 text-cyan-400">
-                      {startTime.toLocaleString(locale, {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </div>
-
-                    <div className={`col-span-2 font-bold ${
-                      status === 'live' ? 'text-green-400' :
-                      status === 'upcoming' ? 'text-yellow-400' :
-                      'text-gray-600'
-                    }`}>
-                      {countdown}
-                    </div>
-
-                    <div className="col-span-1 text-right">
-                      {status === 'live' ? (
-                        <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/50 text-xs">
-                          WATCH
-                        </span>
-                      ) : status === 'upcoming' ? (
-                        <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 text-xs">
-                          WAIT
-                        </span>
-                      ) : (
-                        <span className="px-3 py-1 bg-gray-700/20 text-gray-500 border border-gray-700/50 text-xs">
-                          VIEW
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          <CompetitionList
+            competitions={competitions}
+            eventId={eventId}
+            locale={locale}
+          />
         )}
       </main>
 
