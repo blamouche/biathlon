@@ -14,16 +14,16 @@ export default async function Home({
 
   const events = await BiathlonAPI.getEvents()
 
-  // Récupérer toutes les compétitions pour les événements en cours
-  const liveEvents = events.filter(event => {
+  // Récupérer les compétitions pour les événements en cours ET à venir
+  const activeEvents = events.filter(event => {
     const now = new Date()
-    const start = new Date(event.StartDate)
     const end = new Date(event.EndDate)
-    return now >= start && now <= end
+    // Inclure les événements non encore terminés
+    return end >= now
   })
 
   const allCompetitions = await Promise.all(
-    liveEvents.map(async event => {
+    activeEvents.map(async event => {
       const competitions = await BiathlonAPI.getCompetitions(event.EventId)
       return competitions.map(comp => ({
         ...comp,
@@ -37,7 +37,12 @@ export default async function Home({
 
   // Calculer les statistiques
   const totalEvents = events.length
-  const liveEventsCount = liveEvents.length
+  const liveEventsCount = events.filter(event => {
+    const now = new Date()
+    const start = new Date(event.StartDate)
+    const end = new Date(event.EndDate)
+    return now >= start && now <= end
+  }).length
   const totalCompetitions = competitions.length
   const liveCompetitions = competitions.filter(comp => {
     const status = BiathlonAPI.getRaceStatus(comp.StartTime)
