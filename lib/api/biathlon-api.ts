@@ -215,21 +215,31 @@ export class BiathlonAPI {
    */
   static async getAnalyticResults(raceId: string, typeId: string): Promise<any> {
     try {
-      const response = await fetch(
-        `${API_BASE}/AnalyticResults?RaceId=${raceId}&TypeId=${typeId}`,
-        {
-          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
-        }
-      );
+      const url = `${API_BASE}/AnalyticResults?RaceId=${raceId}&TypeId=${typeId}`;
+      console.log(`[API] Fetching ${typeId} for race ${raceId}...`);
+
+      const response = await fetch(url, {
+        next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
+      });
+
+      console.log(`[API] ${typeId} response status: ${response.status}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      const resultsCount = data?.Results?.length || 0;
+      console.log(`[API] ${typeId} returned ${resultsCount} results`);
+
+      if (resultsCount > 0) {
+        console.log(`[API] ${typeId} first result keys:`, Object.keys(data.Results[0]));
+        console.log(`[API] ${typeId} first result sample:`, data.Results[0]);
+      }
+
       return data;
     } catch (error) {
-      console.error(`Error fetching analytic results (${typeId}):`, error);
+      console.error(`[API] Error fetching analytic results (${typeId}):`, error);
       return null;
     }
   }
