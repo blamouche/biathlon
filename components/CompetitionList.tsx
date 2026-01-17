@@ -4,6 +4,7 @@ import { BiathlonAPI } from '@/lib/api/biathlon-api'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Competition } from '@/lib/types/biathlon'
+import { generateICalFile, downloadICalFile } from '@/lib/utils/calendar'
 
 interface CompetitionWithEvent extends Competition {
   // Competition déjà a tous les champs nécessaires
@@ -13,10 +14,14 @@ export default function CompetitionList({
   competitions,
   eventId,
   locale,
+  eventName,
+  eventLocation,
 }: {
   competitions: CompetitionWithEvent[]
   eventId: string
   locale: string
+  eventName?: string
+  eventLocation?: string
 }) {
   const [time, setTime] = useState(new Date())
 
@@ -89,11 +94,24 @@ export default function CompetitionList({
           countdown = 'FINISHED'
         }
 
+        const handleDownloadCalendar = (e: React.MouseEvent) => {
+          e.preventDefault()
+          e.stopPropagation()
+          const icalContent = generateICalFile(
+            competition.Description,
+            eventLocation || eventName || 'Biathlon World Cup',
+            competition.StartTime,
+            undefined,
+            `${competition.Short} - ${competition.DisciplineId}${competition.km ? ` (${competition.km}km)` : ''}`
+          )
+          const filename = competition.Description.replace(/[^a-z0-9]/gi, '-').toLowerCase()
+          downloadICalFile(icalContent, filename)
+        }
+
         return (
-          <Link
+          <div
             key={competition.RaceId}
-            href={`/${locale}/event/${eventId}/race/${competition.RaceId}`}
-            className={`block border ${statusBorderColor} ${statusBg} transition-all`}
+            className={`border ${statusBorderColor} ${statusBg} transition-all`}
           >
             <div className="p-4 grid grid-cols-12 gap-4 items-center font-mono text-sm">
               <div className="col-span-1 text-gray-500 text-right">
@@ -104,12 +122,15 @@ export default function CompetitionList({
                 <span className={`text-xl ${statusColor}`}>{statusText}</span>
               </div>
 
-              <div className="col-span-5">
+              <Link
+                href={`/${locale}/event/${eventId}/race/${competition.RaceId}`}
+                className="col-span-4 hover:text-cyan-400 transition-colors"
+              >
                 <div className="text-white font-bold">{competition.Description}</div>
                 <div className="text-gray-500 text-xs mt-1">
                   {competition.Short} • {competition.DisciplineId}
                 </div>
-              </div>
+              </Link>
 
               <div className="col-span-2 text-cyan-400">
                 {startTime.toLocaleString(locale, {
@@ -128,23 +149,42 @@ export default function CompetitionList({
                 {countdown}
               </div>
 
-              <div className="col-span-1 text-right">
-                {status === 'live' ? (
-                  <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/50 text-xs">
-                    WATCH
-                  </span>
-                ) : status === 'upcoming' ? (
-                  <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 text-xs">
-                    WAIT
-                  </span>
-                ) : (
-                  <span className="px-3 py-1 bg-gray-700/20 text-gray-500 border border-gray-700/50 text-xs">
-                    VIEW
-                  </span>
-                )}
+              <div className="col-span-2 text-right flex items-center justify-end gap-2">
+                <button
+                  onClick={handleDownloadCalendar}
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 text-xs hover:bg-cyan-500/30 transition-colors"
+                  title="Télécharger dans votre calendrier"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <span>AGENDA</span>
+                </button>
+                <Link
+                  href={`/${locale}/event/${eventId}/race/${competition.RaceId}`}
+                >
+                  {status === 'live' ? (
+                    <span className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-500/50 text-xs">
+                      WATCH
+                    </span>
+                  ) : status === 'upcoming' ? (
+                    <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 text-xs">
+                      WAIT
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 bg-gray-700/20 text-gray-500 border border-gray-700/50 text-xs">
+                      VIEW
+                    </span>
+                  )}
+                </Link>
               </div>
             </div>
-          </Link>
+          </div>
         )
       })}
     </div>
