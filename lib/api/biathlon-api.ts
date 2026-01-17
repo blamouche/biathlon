@@ -209,12 +209,14 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les données des points intermédiaires d'une course
+   * Récupère les données analytiques d'une course
+   * @param raceId - ID de la course
+   * @param typeId - Type d'analyse (ex: "CRST" pour course time, "RNGT" pour range time, "STTM" pour shooting time)
    */
-  static async getIntermediates(raceId: string): Promise<IntermediatesData | null> {
+  static async getAnalyticResults(raceId: string, typeId: string): Promise<any> {
     try {
       const response = await fetch(
-        `${API_BASE}/Intermediates?RaceId=${raceId}`,
+        `${API_BASE}/AnalyticResults?RaceId=${raceId}&TypeId=${typeId}`,
         {
           next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
         }
@@ -226,6 +228,35 @@ export class BiathlonAPI {
 
       const data = await response.json();
       return data;
+    } catch (error) {
+      console.error(`Error fetching analytic results (${typeId}):`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Récupère les données des points intermédiaires d'une course
+   */
+  static async getIntermediates(raceId: string): Promise<IntermediatesData | null> {
+    try {
+      // Récupérer tous les temps de parcours par tour
+      const courseTimesPromises = [];
+      for (let i = 1; i <= 12; i++) {
+        courseTimesPromises.push(
+          this.getAnalyticResults(raceId, `CRS${i}`)
+        );
+      }
+
+      const courseTimes = await Promise.all(courseTimesPromises);
+
+      // Si aucune donnée n'est disponible
+      if (courseTimes.every(ct => !ct || !ct.Results)) {
+        return null;
+      }
+
+      // Transformer les données en format IntermediatesData
+      // TODO: Adapter selon le format réel retourné par l'API
+      return null;
     } catch (error) {
       console.error('Error fetching intermediates:', error);
       return null;
@@ -237,19 +268,74 @@ export class BiathlonAPI {
    */
   static async getRangeAnalysis(raceId: string): Promise<RangeAnalysisData | null> {
     try {
-      const response = await fetch(
-        `${API_BASE}/RangeAnalysis?RaceId=${raceId}`,
-        {
-          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
-        }
-      );
+      // Récupérer les temps de tir (shooting times) et temps au stand (range times)
+      const [
+        shootingTime1, shootingTime2, shootingTime3, shootingTime4,
+        rangeTime1, rangeTime2, rangeTime3, rangeTime4,
+        totalShootingTime, totalRangeTime
+      ] = await Promise.all([
+        this.getAnalyticResults(raceId, 'S1TM'),
+        this.getAnalyticResults(raceId, 'S2TM'),
+        this.getAnalyticResults(raceId, 'S3TM'),
+        this.getAnalyticResults(raceId, 'S4TM'),
+        this.getAnalyticResults(raceId, 'RNG1'),
+        this.getAnalyticResults(raceId, 'RNG2'),
+        this.getAnalyticResults(raceId, 'RNG3'),
+        this.getAnalyticResults(raceId, 'RNG4'),
+        this.getAnalyticResults(raceId, 'STTM'),
+        this.getAnalyticResults(raceId, 'RNGT'),
+      ]);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Si aucune donnée n'est disponible
+      if (!shootingTime1?.Results && !rangeTime1?.Results) {
+        return null;
       }
 
-      const data = await response.json();
-      return data;
+      // Combiner toutes les données par athlète
+      const athletesMap = new Map();
+
+      // Fonction helper pour fusionner les données
+      const mergeResults = (data: any, field: string) => {
+        if (!data?.Results) return;
+        data.Results.forEach((result: any) => {
+          const key = result.IBUId;
+          if (!athletesMap.has(key)) {
+            athletesMap.set(key, {
+              IBUId: result.IBUId,
+              Bib: result.Bib,
+              FamilyName: result.FamilyName,
+              GivenName: result.GivenName,
+              Nat: result.Nat,
+            });
+          }
+          athletesMap.get(key)[field] = result.Value || result.Result;
+        });
+      };
+
+      mergeResults(shootingTime1, 'ShootingTime1');
+      mergeResults(shootingTime2, 'ShootingTime2');
+      mergeResults(shootingTime3, 'ShootingTime3');
+      mergeResults(shootingTime4, 'ShootingTime4');
+      mergeResults(rangeTime1, 'RangeTime1');
+      mergeResults(rangeTime2, 'RangeTime2');
+      mergeResults(rangeTime3, 'RangeTime3');
+      mergeResults(rangeTime4, 'RangeTime4');
+      mergeResults(totalShootingTime, 'ShootingTotalTime');
+      mergeResults(totalRangeTime, 'RangeTotalTime');
+
+      // Ajouter les résultats de tir depuis les résultats de base
+      const results = await this.getResults(raceId);
+      results.forEach(result => {
+        const athlete = athletesMap.get(result.IBUId);
+        if (athlete) {
+          athlete.ShootingTotal = result.ShootingTotal;
+        }
+      });
+
+      return {
+        RaceId: raceId,
+        Athletes: Array.from(athletesMap.values()),
+      };
     } catch (error) {
       console.error('Error fetching range analysis:', error);
       return null;
@@ -261,19 +347,66 @@ export class BiathlonAPI {
    */
   static async getCourseAnalysis(raceId: string): Promise<CourseAnalysisData | null> {
     try {
-      const response = await fetch(
-        `${API_BASE}/CourseAnalysis?RaceId=${raceId}`,
-        {
-          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
-        }
-      );
+      // Récupérer les temps de parcours (course times) et temps de tour (lap times)
+      const [
+        courseTime1, courseTime2, courseTime3, courseTime4, courseTime5,
+        lapTime1, lapTime2, lapTime3, lapTime4, lapTime5,
+        totalCourseTime
+      ] = await Promise.all([
+        this.getAnalyticResults(raceId, 'CRST1'),
+        this.getAnalyticResults(raceId, 'CRST2'),
+        this.getAnalyticResults(raceId, 'CRST3'),
+        this.getAnalyticResults(raceId, 'CRST4'),
+        this.getAnalyticResults(raceId, 'CRST5'),
+        this.getAnalyticResults(raceId, 'CRS1'),
+        this.getAnalyticResults(raceId, 'CRS2'),
+        this.getAnalyticResults(raceId, 'CRS3'),
+        this.getAnalyticResults(raceId, 'CRS4'),
+        this.getAnalyticResults(raceId, 'CRS5'),
+        this.getAnalyticResults(raceId, 'CRST'),
+      ]);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Si aucune donnée n'est disponible
+      if (!courseTime1?.Results && !lapTime1?.Results) {
+        return null;
       }
 
-      const data = await response.json();
-      return data;
+      // Combiner toutes les données par athlète
+      const athletesMap = new Map();
+
+      const mergeResults = (data: any, field: string) => {
+        if (!data?.Results) return;
+        data.Results.forEach((result: any) => {
+          const key = result.IBUId;
+          if (!athletesMap.has(key)) {
+            athletesMap.set(key, {
+              IBUId: result.IBUId,
+              Bib: result.Bib,
+              FamilyName: result.FamilyName,
+              GivenName: result.GivenName,
+              Nat: result.Nat,
+            });
+          }
+          athletesMap.get(key)[field] = result.Value || result.Result;
+        });
+      };
+
+      mergeResults(courseTime1, 'CourseTime1');
+      mergeResults(courseTime2, 'CourseTime2');
+      mergeResults(courseTime3, 'CourseTime3');
+      mergeResults(courseTime4, 'CourseTime4');
+      mergeResults(courseTime5, 'CourseTime5');
+      mergeResults(lapTime1, 'LapTime1');
+      mergeResults(lapTime2, 'LapTime2');
+      mergeResults(lapTime3, 'LapTime3');
+      mergeResults(lapTime4, 'LapTime4');
+      mergeResults(lapTime5, 'LapTime5');
+      mergeResults(totalCourseTime, 'CourseTotalTime');
+
+      return {
+        RaceId: raceId,
+        Athletes: Array.from(athletesMap.values()),
+      };
     } catch (error) {
       console.error('Error fetching course analysis:', error);
       return null;
@@ -282,25 +415,10 @@ export class BiathlonAPI {
 
   /**
    * Récupère les données de pré-temps (distances aux checkpoints)
+   * Note: Cette fonctionnalité n'est pas disponible via l'API publique
    */
   static async getPreTimes(raceId: string): Promise<PreTimesData | null> {
-    try {
-      const response = await fetch(
-        `${API_BASE}/PreTimes?RaceId=${raceId}`,
-        {
-          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching pre-times:', error);
-      return null;
-    }
+    // Les pré-temps ne sont pas disponibles via l'API publique
+    return null;
   }
 }
