@@ -318,7 +318,7 @@ export class BiathlonAPI {
               Nat: result.Nat,
             });
           }
-          athletesMap.get(key)[field] = result.Value || result.Result;
+          athletesMap.get(key)[field] = result.TotalTime || result.Value || result.Result;
         });
       };
 
@@ -397,7 +397,7 @@ export class BiathlonAPI {
               Nat: result.Nat,
             });
           }
-          athletesMap.get(key)[field] = result.Value || result.Result;
+          athletesMap.get(key)[field] = result.TotalTime || result.Value || result.Result;
         });
       };
 
