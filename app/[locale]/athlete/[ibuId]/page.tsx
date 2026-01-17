@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
-import { getTranslations } from 'next-intl/server';
 
 interface AthletePageProps {
   params: Promise<{
@@ -12,7 +11,6 @@ interface AthletePageProps {
 
 export default async function AthletePage({ params }: AthletePageProps) {
   const { locale, ibuId } = await params;
-  const t = await getTranslations('athlete');
 
   // Récupérer les données de l'athlète
   const athleteBio = await BiathlonAPI.getAthleteBio(ibuId);
@@ -24,13 +22,13 @@ export default async function AthletePage({ params }: AthletePageProps) {
         <div className="text-center border border-red-500/50 bg-red-500/10 p-8">
           <div className="text-6xl mb-4 text-red-400">✕</div>
           <h2 className="text-2xl font-bold text-red-400 mb-4">
-            [ERROR] {t('notFound')}
+            [ERROR] ATHLETE NOT FOUND
           </h2>
           <Link
             href={`/${locale}`}
             className="inline-block px-4 py-2 border border-green-500/50 text-green-400 hover:bg-green-500/10 transition-colors"
           >
-            ← {t('backHome')}
+            ← BACK HOME
           </Link>
         </div>
       </div>
@@ -188,7 +186,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
           <div className="text-center py-12 border border-gray-700/50 bg-black/20">
             <div className="text-6xl mb-4">📊</div>
             <p className="text-xl text-gray-400">
-              {t('noResults')}
+              NO RESULTS AVAILABLE
             </p>
           </div>
         ) : (
@@ -196,13 +194,13 @@ export default async function AthletePage({ params }: AthletePageProps) {
             {/* Table Header */}
             <div className="bg-gray-900/50 px-6 py-3 border-b border-gray-700/50">
               <div className="grid grid-cols-12 gap-4 text-gray-500 font-bold text-xs uppercase tracking-wider">
-                <div className="col-span-2">{t('date')}</div>
-                <div className="col-span-2">{t('location')}</div>
-                <div className="col-span-3">{t('competition')}</div>
-                <div className="col-span-1 text-center">{t('rank')}</div>
-                <div className="col-span-1 text-center">{t('shooting')}</div>
-                <div className="col-span-2 text-center">{t('time')}</div>
-                <div className="col-span-1 text-center">{t('behind')}</div>
+                <div className="col-span-2">DATE</div>
+                <div className="col-span-2">LOCATION</div>
+                <div className="col-span-3">COMPETITION</div>
+                <div className="col-span-1 text-center">RANK</div>
+                <div className="col-span-1 text-center">SHOOTING</div>
+                <div className="col-span-2 text-center">TIME</div>
+                <div className="col-span-1 text-center">BEHIND</div>
               </div>
             </div>
 

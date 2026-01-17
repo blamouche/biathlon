@@ -1,5 +1,4 @@
 import { BiathlonAPI } from '@/lib/api/biathlon-api'
-import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import LiveTicker from '@/components/LiveTicker'
 import StatsGrid from '@/components/StatsGrid'
@@ -11,7 +10,6 @@ export default async function Home({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const t = await getTranslations('dashboard')
 
   const events = await BiathlonAPI.getEvents()
 

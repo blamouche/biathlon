@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
-import { getTranslations } from 'next-intl/server';
 import { formatDate } from '@/lib/utils/dateTime';
 
 interface EventPageProps {
@@ -12,9 +11,7 @@ interface EventPageProps {
 
 export default async function EventPage({ params }: EventPageProps) {
   const { eventId, locale } = await params;
-  const t = await getTranslations('event');
-  const tCommon = await getTranslations('common');
-  const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
+  const localeCode = 'en-US';
 
   const events = await BiathlonAPI.getEvents('2526');
   const event = events.find((e) => e.EventId === eventId);
@@ -25,13 +22,13 @@ export default async function EventPage({ params }: EventPageProps) {
         <div className="text-center border border-red-500/50 bg-red-500/10 p-8">
           <div className="text-6xl mb-4 text-red-400">✕</div>
           <h2 className="text-2xl font-bold text-red-400 mb-4">
-            [ERROR] {t('notFound')}
+            [ERROR] EVENT NOT FOUND
           </h2>
           <Link
             href={`/${locale}`}
             className="inline-block px-4 py-2 border border-green-500/50 text-green-400 hover:bg-green-500/10 transition-colors"
           >
-            ← {tCommon('backToEvents')}
+            ← BACK TO EVENTS
           </Link>
         </div>
       </div>
@@ -117,7 +114,7 @@ export default async function EventPage({ params }: EventPageProps) {
           <div className="text-center py-12 border border-gray-700/50 bg-black/20">
             <div className="text-6xl mb-4">📋</div>
             <p className="text-xl text-gray-400">
-              {t('noCompetitions')}
+              NO COMPETITIONS AVAILABLE
             </p>
           </div>
         ) : (
