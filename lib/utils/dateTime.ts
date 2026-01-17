@@ -22,21 +22,23 @@ export function formatDate(
 
 /**
  * Formats a datetime string with proper timezone handling
- * The API returns times in the local timezone of the event.
- * We display them as-is (the browser will interpret them in the user's local timezone).
+ * The API returns times that JavaScript can interpret directly.
+ * toLocaleString automatically converts to the user's local timezone.
  *
  * @param dateString - ISO date string from the API
  * @param locale - Locale for formatting (e.g., 'fr-FR', 'en-US')
- * @param utcOffset - UTC offset in hours from the event (optional, from Event.UTCOffset)
+ * @param utcOffset - UTC offset (deprecated, kept for compatibility)
  * @param options - Intl.DateTimeFormatOptions
- * @returns Formatted datetime string
+ * @returns Formatted datetime string in user's local timezone
  */
 export function formatDateTime(
   dateString: string,
   locale: string,
-  utcOffset?: number,
+  utcOffset: number = 0,
   options?: Intl.DateTimeFormatOptions
 ): string {
+  // Simply parse the date string as-is
+  // JavaScript will handle timezone conversion automatically
   const date = new Date(dateString);
 
   const defaultOptions: Intl.DateTimeFormatOptions = {
@@ -47,6 +49,7 @@ export function formatDateTime(
     ...options,
   };
 
+  // toLocaleString will automatically display in the user's local timezone
   return date.toLocaleString(locale, defaultOptions);
 }
 
