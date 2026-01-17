@@ -1,4 +1,4 @@
-import { Event, Competition, RaceDetails, RaceResult, AthleteBio, AthleteResult } from '../types/biathlon';
+import { Event, Competition, RaceDetails, RaceResult, AthleteBio, AthleteResult, IntermediatesData, RangeAnalysisData, CourseAnalysisData, PreTimesData } from '../types/biathlon';
 
 const API_BASE = 'https://biathlonresults.com/modules/sportapi/api';
 
@@ -205,6 +205,102 @@ export class BiathlonAPI {
     } catch (error) {
       console.error('Error fetching standings:', error);
       return [];
+    }
+  }
+
+  /**
+   * Récupère les données des points intermédiaires d'une course
+   */
+  static async getIntermediates(raceId: string): Promise<IntermediatesData | null> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/Intermediates?RaceId=${raceId}`,
+        {
+          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching intermediates:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Récupère les données d'analyse des tirs au stand
+   */
+  static async getRangeAnalysis(raceId: string): Promise<RangeAnalysisData | null> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/RangeAnalysis?RaceId=${raceId}`,
+        {
+          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching range analysis:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Récupère les données d'analyse des temps de parcours
+   */
+  static async getCourseAnalysis(raceId: string): Promise<CourseAnalysisData | null> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/CourseAnalysis?RaceId=${raceId}`,
+        {
+          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching course analysis:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Récupère les données de pré-temps (distances aux checkpoints)
+   */
+  static async getPreTimes(raceId: string): Promise<PreTimesData | null> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/PreTimes?RaceId=${raceId}`,
+        {
+          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching pre-times:', error);
+      return null;
     }
   }
 }
