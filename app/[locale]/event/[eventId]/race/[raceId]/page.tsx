@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
-import { DownloadICalButton, ShareButton } from '@/components/ActionButtons';
-import { LiveBadge } from '@/components/LiveBadge';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
 
 interface RacePageProps {
@@ -20,14 +18,17 @@ export default async function RacePage({ params }: RacePageProps) {
 
   if (!competition) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Course non trouvée
+      <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono flex items-center justify-center">
+        <div className="text-center border border-red-500/50 bg-red-500/10 p-8">
+          <div className="text-6xl mb-4 text-red-400">✕</div>
+          <h2 className="text-2xl font-bold text-red-400 mb-4">
+            [ERROR] RACE NOT FOUND
           </h2>
-          <Link href={`/event/${eventId}`} className="text-blue-600 dark:text-blue-400 hover:underline">
-            Retour à l'événement
+          <Link
+            href={`/${locale}/event/${eventId}`}
+            className="inline-block px-4 py-2 border border-green-500/50 text-green-400 hover:bg-green-500/10 transition-colors"
+          >
+            ← BACK TO EVENT
           </Link>
         </div>
       </div>
@@ -49,155 +50,157 @@ export default async function RacePage({ params }: RacePageProps) {
 
   const statusConfig = {
     upcoming: {
-      title: 'Liste de départ',
-      icon: '⏰',
-      color: 'bg-gray-500',
-      description: 'La course n\'a pas encore commencé',
+      title: 'START LIST',
+      color: 'text-yellow-400',
+      badge: 'SCHEDULED',
+      badgeColor: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50',
     },
     live: {
-      title: 'Résultats en direct',
-      icon: '🔴',
-      color: 'bg-red-500 animate-pulse',
-      description: 'Course en cours',
+      title: 'LIVE RESULTS',
+      color: 'text-green-400',
+      badge: '● LIVE',
+      badgeColor: 'bg-green-500/20 text-green-400 border-green-500/50 animate-pulse',
     },
     finished: {
-      title: 'Résultats finaux',
-      icon: '🏁',
-      color: 'bg-green-500',
-      description: 'Course terminée',
+      title: 'FINAL RESULTS',
+      color: 'text-cyan-400',
+      badge: 'FINISHED',
+      badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50',
     },
   };
 
   const config = statusConfig[status];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
+      {/* Header terminal style */}
+      <div className="border-b border-green-500/30 bg-black/40 backdrop-blur sticky top-0 z-10">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link
-            href={`/event/${eventId}`}
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-4"
+            href={`/${locale}/event/${eventId}`}
+            className="inline-flex items-center text-green-400 hover:text-green-300 mb-4 text-sm"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Retour à l'événement
+            ← [BACK TO EVENT]
           </Link>
 
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <div className="flex items-start gap-3 mb-3">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-2xl font-bold text-green-400 tracking-wider">
                   {competition.Description}
                 </h1>
-                {status === 'live' && <LiveBadge position="relative" size="md" />}
+                <span className={`px-3 py-1 border text-xs ${config.badgeColor}`}>
+                  {config.badge}
+                </span>
               </div>
 
-              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 flex-wrap mb-3">
+              <div className="flex items-center gap-4 text-gray-500 text-xs">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span><FormattedDateTime dateString={competition.StartTime} locale={locale} /></span>
+                  <span>⏰</span>
+                  <FormattedDateTime dateString={competition.StartTime} locale={locale} />
                 </div>
                 {competition.km && (
                   <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    <span>{competition.km} km</span>
+                    <span>📏</span>
+                    <span>{competition.km} KM</span>
                   </div>
                 )}
-              </div>
-
-              <div className="flex items-center gap-2 flex-wrap">
-                <DownloadICalButton
-                  title={competition.Description}
-                  location={competition.Short || ''}
-                  startDate={competition.StartTime}
-                  description={`${competition.Description} - ${competition.km ? competition.km + ' km' : ''}`}
-                />
-                <ShareButton
-                  title={competition.Description}
-                  url={typeof window !== 'undefined' ? window.location.href : ''}
-                  text={`Regardez ${competition.Description} en live sur Biathlon World Cup Tracker`}
-                />
+                <div className="flex items-center gap-2">
+                  <span>🎯</span>
+                  <span>{competition.DisciplineId}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {config.title}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            {results.length} participant{results.length > 1 ? 's' : ''}
-          </p>
+      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="border border-cyan-500/30 bg-black/40 p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <h2 className={`text-lg font-bold tracking-wider ${config.color}`}>
+              [{config.title}]
+            </h2>
+            <div className="text-gray-500 text-sm">
+              {results.length} ATHLETES
+            </div>
+          </div>
         </div>
 
         {results.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl shadow">
+          <div className="text-center py-12 border border-gray-700/50 bg-black/20">
             <div className="text-6xl mb-4">⏳</div>
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-2">
-              Aucun résultat disponible pour le moment
+            <p className="text-xl text-gray-400 mb-2">
+              NO DATA AVAILABLE
             </p>
-            <p className="text-gray-500 dark:text-gray-500 text-sm">
-              Les données seront disponibles prochainement
+            <p className="text-gray-600 text-sm">
+              Results will be displayed when available
             </p>
           </div>
         ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+          <div className="border border-gray-700/50 bg-black/20 overflow-hidden">
             {/* Table Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
-              <div className="grid grid-cols-12 gap-4 text-white font-bold text-sm">
-                <div className="col-span-1 text-center">Rang</div>
-                <div className="col-span-1 text-center">Doss.</div>
-                <div className="col-span-4">Athlète</div>
-                <div className="col-span-2 text-center">Tirs</div>
-                <div className="col-span-2 text-center">Temps</div>
-                <div className="col-span-2 text-center">Écart</div>
+            <div className="bg-gray-900/50 px-6 py-3 border-b border-gray-700/50">
+              <div className="grid grid-cols-12 gap-4 text-gray-500 font-bold text-xs uppercase tracking-wider">
+                <div className="col-span-1 text-center">RANK</div>
+                <div className="col-span-1 text-center">BIB</div>
+                <div className="col-span-4">ATHLETE</div>
+                <div className="col-span-2 text-center">SHOOTING</div>
+                <div className="col-span-2 text-center">TIME</div>
+                <div className="col-span-2 text-center">BEHIND</div>
               </div>
             </div>
 
             {/* Results List */}
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="divide-y divide-gray-800/50">
               {results.map((result, index) => {
                 const isTopThree = typeof result.Rank === 'number' && result.Rank <= 3;
-                const rankColors = ['text-yellow-500', 'text-gray-400', 'text-orange-600'];
-                const rankColor = isTopThree && typeof result.Rank === 'number'
-                  ? rankColors[result.Rank - 1]
-                  : 'text-gray-700 dark:text-gray-300';
+
+                let rankDisplay = result.Rank || '-';
+                let rankColor = 'text-gray-400';
+                let rowBg = 'hover:bg-gray-800/30';
+
+                if (isTopThree && typeof result.Rank === 'number') {
+                  rowBg = 'bg-gradient-to-r';
+                  if (result.Rank === 1) {
+                    rankDisplay = `🥇 ${result.Rank}`;
+                    rankColor = 'text-yellow-400 font-bold';
+                    rowBg += ' from-yellow-500/10 to-transparent hover:from-yellow-500/20';
+                  } else if (result.Rank === 2) {
+                    rankDisplay = `🥈 ${result.Rank}`;
+                    rankColor = 'text-gray-300 font-bold';
+                    rowBg += ' from-gray-500/10 to-transparent hover:from-gray-500/20';
+                  } else if (result.Rank === 3) {
+                    rankDisplay = `🥉 ${result.Rank}`;
+                    rankColor = 'text-orange-400 font-bold';
+                    rowBg += ' from-orange-500/10 to-transparent hover:from-orange-500/20';
+                  }
+                }
 
                 return (
                   <div
                     key={result.IBUId || index}
-                    className={`grid grid-cols-12 gap-4 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-                      isTopThree ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                    }`}
+                    className={`grid grid-cols-12 gap-4 px-6 py-4 transition-colors ${rowBg}`}
                   >
-                    <div className={`col-span-1 text-center font-bold text-lg ${rankColor}`}>
-                      {result.Rank || '-'}
+                    <div className={`col-span-1 text-center font-bold ${rankColor}`}>
+                      {rankDisplay}
                     </div>
-                    <div className="col-span-1 text-center text-gray-600 dark:text-gray-400">
-                      {result.Bib}
+                    <div className="col-span-1 text-center text-gray-500">
+                      #{result.Bib}
                     </div>
                     <div className="col-span-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{getFlagEmoji(result.Nat)}</span>
+                        <span className="text-xl">{getFlagEmoji(result.Nat)}</span>
                         <div>
                           <Link
                             href={`/${locale}/athlete/${result.IBUId}`}
-                            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                            className="hover:text-cyan-400 transition-colors"
                           >
-                            <div className="font-semibold text-gray-900 dark:text-white hover:underline">
+                            <div className="font-semibold text-white hover:underline">
                               {result.FamilyName}
                             </div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                            <div className="text-xs text-gray-500">
                               {result.GivenName}
                             </div>
                           </Link>
@@ -205,15 +208,15 @@ export default async function RacePage({ params }: RacePageProps) {
                       </div>
                     </div>
                     <div className="col-span-2 text-center">
-                      <span className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-mono text-sm">
+                      <span className="inline-flex items-center justify-center px-3 py-1 bg-gray-800/50 text-cyan-400 font-mono text-sm border border-gray-700/50">
                         {result.ShootingTotal || '-'}
                       </span>
                     </div>
-                    <div className="col-span-2 text-center font-mono text-gray-900 dark:text-white">
+                    <div className="col-span-2 text-center font-mono text-white font-bold">
                       {result.TotalTime || '-'}
                     </div>
-                    <div className="col-span-2 text-center text-gray-600 dark:text-gray-400 font-mono text-sm">
-                      {result.Behind || '-'}
+                    <div className="col-span-2 text-center text-gray-400 font-mono text-sm">
+                      {result.Behind ? `+${result.Behind}` : '-'}
                     </div>
                   </div>
                 );
@@ -224,18 +227,25 @@ export default async function RacePage({ params }: RacePageProps) {
 
         {/* Auto-refresh notice for live races */}
         {status === 'live' && results.length > 0 && (
-          <div className="mt-6 p-4 bg-blue-100 dark:bg-blue-900/30 rounded-lg border border-blue-300 dark:border-blue-700">
-            <div className="flex items-center gap-2 text-blue-900 dark:text-blue-100">
-              <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span className="text-sm font-medium">
-                Les résultats sont mis à jour automatiquement pendant la course
+          <div className="mt-6 p-4 bg-green-500/10 border border-green-500/30">
+            <div className="flex items-center gap-3 text-green-400">
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm font-mono uppercase tracking-wider">
+                LIVE DATA STREAM ACTIVE • AUTO-REFRESH: 60s
               </span>
             </div>
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <div className="border-t border-green-500/30 bg-black/40 mt-12">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="text-center text-gray-500 text-xs">
+            <p>DATA SOURCE: BIATHLONRESULTS.COM • RACE ID: {raceId}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

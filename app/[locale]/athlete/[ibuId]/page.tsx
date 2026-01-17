@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
-import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
 interface AthletePageProps {
@@ -21,14 +20,17 @@ export default async function AthletePage({ params }: AthletePageProps) {
 
   if (!athleteBio) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('notFound')}
+      <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono flex items-center justify-center">
+        <div className="text-center border border-red-500/50 bg-red-500/10 p-8">
+          <div className="text-6xl mb-4 text-red-400">✕</div>
+          <h2 className="text-2xl font-bold text-red-400 mb-4">
+            [ERROR] {t('notFound')}
           </h2>
-          <Link href={`/${locale}`} className="text-blue-600 dark:text-blue-400 hover:underline">
-            {t('backHome')}
+          <Link
+            href={`/${locale}`}
+            className="inline-block px-4 py-2 border border-green-500/50 text-green-400 hover:bg-green-500/10 transition-colors"
+          >
+            ← {t('backHome')}
           </Link>
         </div>
       </div>
@@ -47,12 +49,12 @@ export default async function AthletePage({ params }: AthletePageProps) {
 
   const getRankColor = (rank: number | string) => {
     const rankNum = typeof rank === 'string' ? parseInt(rank) : rank;
-    if (isNaN(rankNum)) return 'text-gray-600 dark:text-gray-400';
-    if (rankNum === 1) return 'text-yellow-600 dark:text-yellow-400 font-bold';
-    if (rankNum === 2) return 'text-gray-400 dark:text-gray-300 font-bold';
-    if (rankNum === 3) return 'text-orange-700 dark:text-orange-400 font-bold';
-    if (rankNum <= 10) return 'text-blue-600 dark:text-blue-400 font-semibold';
-    return 'text-gray-600 dark:text-gray-400';
+    if (isNaN(rankNum)) return 'text-gray-400';
+    if (rankNum === 1) return 'text-yellow-400 font-bold';
+    if (rankNum === 2) return 'text-gray-300 font-bold';
+    if (rankNum === 3) return 'text-orange-400 font-bold';
+    if (rankNum <= 10) return 'text-cyan-400 font-semibold';
+    return 'text-gray-400';
   };
 
   const getRankBadge = (rank: number | string) => {
@@ -76,138 +78,198 @@ export default async function AthletePage({ params }: AthletePageProps) {
   }).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* En-tête de l'athlète */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+    <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
+      {/* Header terminal style */}
+      <div className="border-b border-green-500/30 bg-black/40 backdrop-blur">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <Link
+            href={`/${locale}`}
+            className="inline-flex items-center text-green-400 hover:text-green-300 mb-4 text-sm"
+          >
+            ← [BACK TO MONITORING]
+          </Link>
+
           <div className="flex items-start gap-6">
-            <div className="text-7xl">{getFlagEmoji(athleteBio.Nat)}</div>
+            <div className="text-6xl">{getFlagEmoji(athleteBio.Nat)}</div>
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-3xl font-bold text-green-400 tracking-wider mb-2">
                 {athleteBio.GivenName} {athleteBio.FamilyName}
               </h1>
-              <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-300">
+              <div className="flex flex-wrap gap-4 text-gray-500 text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">{t('country')}:</span>
-                  <span>{athleteBio.NatLong || athleteBio.Nat}</span>
+                  <span className="text-gray-600">NATION:</span>
+                  <span className="text-cyan-400">{athleteBio.NatLong || athleteBio.Nat}</span>
                 </div>
                 {athleteBio.Birthdate && (
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">{t('birthdate')}:</span>
-                    <span>{new Date(athleteBio.Birthdate).toLocaleDateString(locale)}</span>
+                    <span className="text-gray-600">DOB:</span>
+                    <span className="text-cyan-400">{new Date(athleteBio.Birthdate).toLocaleDateString(locale)}</span>
                   </div>
                 )}
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-600">IBU ID:</span>
+                  <span className="text-cyan-400">{ibuId}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Statistiques de la saison */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          <div className="border border-cyan-500/50 bg-cyan-500/5 p-6">
             <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-                {totalRaces}
+              <div className="text-gray-500 text-xs font-bold tracking-widest mb-2">
+                TOTAL RACES
               </div>
-              <div className="text-gray-600 dark:text-gray-300">{t('totalRaces')}</div>
+              <div className="text-5xl font-bold text-cyan-400 mb-2 font-mono">
+                {String(totalRaces).padStart(3, '0')}
+              </div>
+              <div className="flex gap-1 justify-center">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1 flex-1 ${i < Math.min(10, totalRaces / 3) ? 'bg-cyan-500/50' : 'bg-gray-800'}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+
+          <div className="border border-yellow-500/50 bg-yellow-500/5 p-6">
             <div className="text-center">
-              <div className="text-4xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">
-                {podiums}
+              <div className="text-gray-500 text-xs font-bold tracking-widest mb-2">
+                PODIUMS
               </div>
-              <div className="text-gray-600 dark:text-gray-300">{t('podiums')}</div>
+              <div className="text-5xl font-bold text-yellow-400 mb-2 font-mono">
+                {String(podiums).padStart(3, '0')}
+              </div>
+              <div className="flex gap-1 justify-center">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1 flex-1 ${i < Math.min(10, podiums * 2) ? 'bg-yellow-500/50' : 'bg-gray-800'}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+
+          <div className="border border-green-500/50 bg-green-500/5 p-6">
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
-                {top10}
+              <div className="text-gray-500 text-xs font-bold tracking-widest mb-2">
+                TOP 10
               </div>
-              <div className="text-gray-600 dark:text-gray-300">{t('top10')}</div>
+              <div className="text-5xl font-bold text-green-400 mb-2 font-mono">
+                {String(top10).padStart(3, '0')}
+              </div>
+              <div className="flex gap-1 justify-center">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1 flex-1 ${i < Math.min(10, top10) ? 'bg-green-500/50' : 'bg-gray-800'}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Résultats de la saison */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {t('seasonResults')}
-            </h2>
-          </div>
+        <div className="border border-cyan-500/30 bg-black/40 p-4 mb-6">
+          <h2 className="text-cyan-400 text-lg font-bold tracking-wider">
+            [SEASON RESULTS] - 2025/2026
+          </h2>
+        </div>
 
-          {results.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+        {results.length === 0 ? (
+          <div className="text-center py-12 border border-gray-700/50 bg-black/20">
+            <div className="text-6xl mb-4">📊</div>
+            <p className="text-xl text-gray-400">
               {t('noResults')}
+            </p>
+          </div>
+        ) : (
+          <div className="border border-gray-700/50 bg-black/20 overflow-hidden">
+            {/* Table Header */}
+            <div className="bg-gray-900/50 px-6 py-3 border-b border-gray-700/50">
+              <div className="grid grid-cols-12 gap-4 text-gray-500 font-bold text-xs uppercase tracking-wider">
+                <div className="col-span-2">{t('date')}</div>
+                <div className="col-span-2">{t('location')}</div>
+                <div className="col-span-3">{t('competition')}</div>
+                <div className="col-span-1 text-center">{t('rank')}</div>
+                <div className="col-span-1 text-center">{t('shooting')}</div>
+                <div className="col-span-2 text-center">{t('time')}</div>
+                <div className="col-span-1 text-center">{t('behind')}</div>
+              </div>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-700">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('date')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('location')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('competition')}
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('rank')}
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('shooting')}
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('time')}
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('behind')}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {results.map((result, index) => (
-                    <tr
-                      key={`${result.RaceId}-${index}`}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                        <FormattedDateTime dateString={result.Date} locale={locale} />
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
-                        {result.Location}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
-                        <Link
-                          href={`/${locale}/event/${result.EventId}/race/${result.RaceId}`}
-                          className="text-blue-600 dark:text-blue-400 hover:underline"
-                        >
-                          {result.CompetitionName}
-                        </Link>
-                      </td>
-                      <td className={`px-6 py-4 whitespace-nowrap text-center text-lg ${getRankColor(result.Rank)}`}>
-                        {getRankBadge(result.Rank)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-gray-100">
+
+            {/* Results List */}
+            <div className="divide-y divide-gray-800/50">
+              {results.map((result, index) => {
+                const rankNum = typeof result.Rank === 'string' ? parseInt(result.Rank) : result.Rank;
+                const isPodium = !isNaN(rankNum) && rankNum <= 3;
+                let rowBg = 'hover:bg-gray-800/30';
+
+                if (isPodium) {
+                  if (rankNum === 1) {
+                    rowBg = 'bg-gradient-to-r from-yellow-500/10 to-transparent hover:from-yellow-500/20';
+                  } else if (rankNum === 2) {
+                    rowBg = 'bg-gradient-to-r from-gray-500/10 to-transparent hover:from-gray-500/20';
+                  } else if (rankNum === 3) {
+                    rowBg = 'bg-gradient-to-r from-orange-500/10 to-transparent hover:from-orange-500/20';
+                  }
+                }
+
+                return (
+                  <div
+                    key={`${result.RaceId}-${index}`}
+                    className={`grid grid-cols-12 gap-4 px-6 py-4 transition-colors ${rowBg}`}
+                  >
+                    <div className="col-span-2 text-sm text-gray-400">
+                      <FormattedDateTime dateString={result.Date} locale={locale} />
+                    </div>
+                    <div className="col-span-2 text-sm text-gray-300">
+                      {result.Location}
+                    </div>
+                    <div className="col-span-3 text-sm">
+                      <Link
+                        href={`/${locale}/event/${result.EventId}/race/${result.RaceId}`}
+                        className="text-cyan-400 hover:text-cyan-300 hover:underline"
+                      >
+                        {result.CompetitionName}
+                      </Link>
+                    </div>
+                    <div className={`col-span-1 text-center text-lg ${getRankColor(result.Rank)}`}>
+                      {getRankBadge(result.Rank)}
+                    </div>
+                    <div className="col-span-1 text-center text-sm">
+                      <span className="inline-flex items-center justify-center px-2 py-1 bg-gray-800/50 text-cyan-400 font-mono text-xs border border-gray-700/50">
                         {result.ShootingTotal}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-mono text-gray-900 dark:text-gray-100">
-                        {result.TotalTime}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-600 dark:text-gray-400">
-                        {result.Behind}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </span>
+                    </div>
+                    <div className="col-span-2 text-center font-mono text-white text-sm">
+                      {result.TotalTime}
+                    </div>
+                    <div className="col-span-1 text-center text-gray-400 font-mono text-xs">
+                      {result.Behind ? `+${result.Behind}` : '-'}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          )}
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-green-500/30 bg-black/40 mt-12">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="text-center text-gray-500 text-xs">
+            <p>DATA SOURCE: BIATHLONRESULTS.COM • ATHLETE ID: {ibuId}</p>
+          </div>
         </div>
       </div>
     </div>
