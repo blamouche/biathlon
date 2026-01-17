@@ -190,12 +190,17 @@ export default async function RacePage({ params }: RacePageProps) {
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">{getFlagEmoji(result.Nat)}</span>
                         <div>
-                          <div className="font-semibold text-gray-900 dark:text-white">
-                            {result.FamilyName}
-                          </div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">
-                            {result.GivenName}
-                          </div>
+                          <Link
+                            href={`/${locale}/athlete/${result.IBUId}`}
+                            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          >
+                            <div className="font-semibold text-gray-900 dark:text-white hover:underline">
+                              {result.FamilyName}
+                            </div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                              {result.GivenName}
+                            </div>
+                          </Link>
                         </div>
                       </div>
                     </div>

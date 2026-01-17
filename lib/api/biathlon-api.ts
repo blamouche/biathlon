@@ -1,4 +1,4 @@
-import { Event, Competition, RaceDetails, RaceResult } from '../types/biathlon';
+import { Event, Competition, RaceDetails, RaceResult, AthleteBio, AthleteResult } from '../types/biathlon';
 
 const API_BASE = 'https://biathlonresults.com/modules/sportapi/api';
 
@@ -115,6 +115,96 @@ export class BiathlonAPI {
       return 'live';
     } else {
       return 'finished';
+    }
+  }
+
+  /**
+   * Récupère les informations biographiques d'un athlète
+   */
+  static async getAthleteBio(ibuId: string): Promise<AthleteBio | null> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/CISBios?IBUId=${ibuId}`,
+        {
+          next: { revalidate: 86400 }, // Cache pour 24 heures
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data || null;
+    } catch (error) {
+      console.error('Error fetching athlete bio:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Récupère les résultats d'un athlète pour une saison
+   */
+  static async getAthleteResults(ibuId: string, seasonId: string = '2526'): Promise<AthleteResult[]> {
+    try {
+      // Récupère tous les événements de la saison
+      const events = await this.getEvents(seasonId);
+      const results: AthleteResult[] = [];
+
+      // Pour chaque événement, récupère les compétitions
+      for (const event of events) {
+        const competitions = await this.getCompetitions(event.EventId);
+
+        // Pour chaque compétition, vérifie si l'athlète a participé
+        for (const comp of competitions) {
+          const raceResults = await this.getResults(comp.RaceId);
+          const athleteResult = raceResults.find(r => r.IBUId === ibuId);
+
+          if (athleteResult) {
+            results.push({
+              RaceId: comp.RaceId,
+              EventId: event.EventId,
+              CompetitionName: comp.Description,
+              Location: event.ShortDescription,
+              Date: comp.StartTime,
+              Rank: athleteResult.Rank,
+              TotalTime: athleteResult.TotalTime,
+              Behind: athleteResult.Behind,
+              ShootingTotal: athleteResult.ShootingTotal,
+              DisciplineId: comp.DisciplineId,
+            });
+          }
+        }
+      }
+
+      return results;
+    } catch (error) {
+      console.error('Error fetching athlete results:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Récupère le classement général de la Coupe du monde pour une catégorie
+   */
+  static async getStandings(categoryId: string = 'SM', seasonId: string = '2526') {
+    try {
+      const response = await fetch(
+        `${API_BASE}/Standings?SeasonId=${seasonId}&Level=1&CategoryId=${categoryId}`,
+        {
+          next: { revalidate: 3600 }, // Cache pour 1 heure
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching standings:', error);
+      return [];
     }
   }
 }

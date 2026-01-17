@@ -48,5 +48,23 @@
   "footer": {
     "dataSource": "Données officielles fournies par",
     "rights": "Biathlon World Cup Tracker • Tous droits réservés"
+  },
+  "athlete": {
+    "notFound": "Athlète non trouvé",
+    "backHome": "Retour à l'accueil",
+    "country": "Pays",
+    "birthdate": "Date de naissance",
+    "totalRaces": "Courses disputées",
+    "podiums": "Podiums",
+    "top10": "Top 10",
+    "seasonResults": "Résultats de la saison 2025-2026",
+    "noResults": "Aucun résultat disponible pour cette saison",
+    "date": "Date",
+    "location": "Lieu",
+    "competition": "Compétition",
+    "rank": "Rang",
+    "shooting": "Tir",
+    "time": "Temps",
+    "behind": "Écart"
   }
 }
