@@ -3,6 +3,7 @@ import Link from 'next/link'
 import LiveTicker from '@/components/LiveTicker'
 import StatsGrid from '@/components/StatsGrid'
 import MarketTable from '@/components/MarketTable'
+import LiveTimestamp from '@/components/LiveTimestamp'
 
 export default async function Home({
   params,
@@ -54,7 +55,7 @@ export default async function Home({
                 BIATHLON LIVE MONITORING SYSTEM
               </h1>
               <p className="text-xs text-gray-500 mt-1">
-                REAL-TIME DATA FEED • IBU OFFICIAL SOURCE • {new Date().toISOString()}
+                REAL-TIME DATA FEED • IBU OFFICIAL SOURCE • <LiveTimestamp />
               </p>
             </div>
             <div className="flex gap-2">
