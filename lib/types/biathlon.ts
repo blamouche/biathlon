@@ -31,6 +31,7 @@ export interface RaceResult {
   Bib: number;
   Rank: number | string;
   ShootingTotal: string;
+  Shootings?: string;
   ShootingProne?: number;
   ShootingStanding?: number;
   TotalTime: string;
