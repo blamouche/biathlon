@@ -23,21 +23,32 @@ export function formatDate(
 /**
  * Formats a datetime string with proper timezone handling
  * The API returns times in the local timezone of the event.
- * We display them as-is (the browser will interpret them in the user's local timezone).
+ * We convert them to the user's local timezone for display.
  *
- * @param dateString - ISO date string from the API
+ * @param dateString - ISO date string from the API (in event's local timezone)
  * @param locale - Locale for formatting (e.g., 'fr-FR', 'en-US')
- * @param utcOffset - UTC offset in hours from the event (optional, from Event.UTCOffset)
+ * @param utcOffset - UTC offset in hours from the event (from Event.UTCOffset, e.g., 1 for UTC+1)
  * @param options - Intl.DateTimeFormatOptions
- * @returns Formatted datetime string
+ * @returns Formatted datetime string in user's local timezone
  */
 export function formatDateTime(
   dateString: string,
   locale: string,
-  utcOffset?: number,
+  utcOffset: number = 0,
   options?: Intl.DateTimeFormatOptions
 ): string {
-  const date = new Date(dateString);
+  // Remove any existing timezone info from the date string
+  const cleanDateString = dateString.replace(/Z$/, '').replace(/[+-]\d{2}:\d{2}$/, '');
+
+  // Add the event's timezone offset to create a proper ISO string
+  // e.g., if utcOffset = 1, we append "+01:00"
+  const offsetHours = Math.floor(Math.abs(utcOffset));
+  const offsetMinutes = Math.abs((utcOffset % 1) * 60);
+  const offsetSign = utcOffset >= 0 ? '+' : '-';
+  const offsetString = `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMinutes).padStart(2, '0')}`;
+
+  // Parse the date with the correct timezone
+  const date = new Date(cleanDateString + offsetString);
 
   const defaultOptions: Intl.DateTimeFormatOptions = {
     day: 'numeric',
@@ -47,6 +58,7 @@ export function formatDateTime(
     ...options,
   };
 
+  // toLocaleString will automatically display in the user's local timezone
   return date.toLocaleString(locale, defaultOptions);
 }
 

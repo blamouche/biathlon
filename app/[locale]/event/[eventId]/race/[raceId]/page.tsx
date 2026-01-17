@@ -16,6 +16,8 @@ export default async function RacePage({ params }: RacePageProps) {
   const { locale, eventId, raceId } = await params;
   const localeCode = locale === 'fr' ? 'fr-FR' : 'en-US';
 
+  const events = await BiathlonAPI.getEvents('2526');
+  const event = events.find((e) => e.EventId === eventId);
   const competitions = await BiathlonAPI.getCompetitions(eventId);
   const competition = competitions.find((c) => c.RaceId === raceId);
 
@@ -100,7 +102,7 @@ export default async function RacePage({ params }: RacePageProps) {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>{formatDateTime(competition.StartTime, localeCode)}</span>
+                  <span>{formatDateTime(competition.StartTime, localeCode, event?.UTCOffset || 0)}</span>
                 </div>
                 {competition.km && (
                   <div className="flex items-center gap-2">

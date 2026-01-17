@@ -123,6 +123,7 @@ export default async function EventPage({ params }: EventPageProps) {
                 competition={competition}
                 eventId={eventId}
                 locale={locale}
+                utcOffset={event.UTCOffset}
               />
             ))}
           </div>
