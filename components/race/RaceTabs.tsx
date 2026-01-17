@@ -2,13 +2,11 @@
 
 import { useState } from 'react';
 import { IntermediatesData, RangeAnalysisData, CourseAnalysisData, PreTimesData, RaceResult } from '@/lib/types/biathlon';
-import { IntermediatesSection } from './IntermediatesSection';
 import { RangeAnalysisSection } from './RangeAnalysisSection';
 import { CourseAnalysisSection } from './CourseAnalysisSection';
-import { PreTimesSection } from './PreTimesSection';
 import Link from 'next/link';
 
-type TabId = 'results' | 'intermediates' | 'range' | 'course' | 'pretimes';
+type TabId = 'results' | 'range' | 'course';
 
 interface Tab {
   id: TabId;
@@ -41,10 +39,8 @@ export function RaceTabs({
 
   const tabs: Tab[] = [
     { id: 'results', label: 'RESULTS', shortLabel: 'RESULTS' },
-    { id: 'intermediates', label: 'INTERMEDIATES', shortLabel: 'INTER' },
     { id: 'range', label: 'RANGE ANALYSIS', shortLabel: 'RANGE' },
     { id: 'course', label: 'COURSE ANALYSIS', shortLabel: 'COURSE' },
-    { id: 'pretimes', label: 'PRE-TIMES', shortLabel: 'PRE-T' },
   ];
 
   const config = statusConfig[status];
@@ -206,10 +202,8 @@ export function RaceTabs({
           </>
         )}
 
-        {activeTab === 'intermediates' && <IntermediatesSection data={intermediates} />}
         {activeTab === 'range' && <RangeAnalysisSection data={rangeAnalysis} />}
         {activeTab === 'course' && <CourseAnalysisSection data={courseAnalysis} />}
-        {activeTab === 'pretimes' && <PreTimesSection data={preTimes} />}
       </div>
     </div>
   );
