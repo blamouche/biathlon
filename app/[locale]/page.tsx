@@ -4,6 +4,7 @@ import LiveTicker from '@/components/LiveTicker'
 import StatsGrid from '@/components/StatsGrid'
 import MarketTable from '@/components/MarketTable'
 import LiveTimestamp from '@/components/LiveTimestamp'
+import { SharePageButton } from '@/components/SharePageButton'
 
 export default async function Home({
   params,
@@ -64,6 +65,7 @@ export default async function Home({
               </p>
             </div>
             <div className="flex gap-2">
+              <SharePageButton />
               <div className="px-4 py-2 border border-green-500/50 bg-green-500/5">
                 <span className="text-green-400 animate-pulse">● LIVE</span>
               </div>

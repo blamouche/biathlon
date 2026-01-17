@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
+import { SharePageButton } from '@/components/SharePageButton';
 import { DownloadICalButton } from '@/components/ActionButtons';
 
 interface RacePageProps {
@@ -115,7 +116,8 @@ export default async function RacePage({ params }: RacePageProps) {
               </div>
             </div>
 
-            <div className="flex items-start">
+            <div className="flex items-center gap-2">
+              <SharePageButton />
               <DownloadICalButton
                 title={competition.Description}
                 location={event?.ShortDescription || event?.Description || 'Biathlon World Cup'}
