@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
+import { RaceTabs } from '@/components/race/RaceTabs';
 import { SharePageButton } from '@/components/SharePageButton';
 import { DownloadICalButton } from '@/components/ActionButtons';
 
@@ -42,15 +43,11 @@ export default async function RacePage({ params }: RacePageProps) {
   const results = await BiathlonAPI.getResults(raceId);
   const status = BiathlonAPI.getRaceStatus(competition.StartTime);
 
-  const getFlagEmoji = (countryCode: string) => {
-    if (!countryCode || countryCode.length !== 3) return '🏳️';
-    const codePoints = countryCode
-      .toUpperCase()
-      .slice(0, 2)
-      .split('')
-      .map((char) => 127397 + char.charCodeAt(0));
-    return String.fromCodePoint(...codePoints);
-  };
+  // Fetch additional race data
+  const intermediates = await BiathlonAPI.getIntermediates(raceId);
+  const rangeAnalysis = await BiathlonAPI.getRangeAnalysis(raceId);
+  const courseAnalysis = await BiathlonAPI.getCourseAnalysis(raceId);
+  const preTimes = await BiathlonAPI.getPreTimes(raceId);
 
   const statusConfig = {
     upcoming: {
@@ -131,113 +128,16 @@ export default async function RacePage({ params }: RacePageProps) {
 
       {/* Main Content */}
       <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="border border-cyan-500/30 bg-black/40 p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <h2 className={`text-lg font-bold tracking-wider ${config.color}`}>
-              [{config.title}]
-            </h2>
-            <div className="text-gray-500 text-sm">
-              {results.length} ATHLETES
-            </div>
-          </div>
-        </div>
-
-        {results.length === 0 ? (
-          <div className="text-center py-12 border border-gray-700/50 bg-black/20">
-            <div className="text-6xl mb-4">⏳</div>
-            <p className="text-xl text-gray-400 mb-2">
-              NO DATA AVAILABLE
-            </p>
-            <p className="text-gray-600 text-sm">
-              Results will be displayed when available
-            </p>
-          </div>
-        ) : (
-          <div className="border border-gray-700/50 bg-black/20 overflow-hidden">
-            {/* Table Header */}
-            <div className="bg-gray-900/50 px-6 py-3 border-b border-gray-700/50">
-              <div className="grid grid-cols-12 gap-4 text-gray-500 font-bold text-xs uppercase tracking-wider">
-                <div className="col-span-1 text-center">RANK</div>
-                <div className="col-span-1 text-center">BIB</div>
-                <div className="col-span-4">ATHLETE</div>
-                <div className="col-span-2 text-center">SHOOTING</div>
-                <div className="col-span-2 text-center">TIME</div>
-                <div className="col-span-2 text-center">BEHIND</div>
-              </div>
-            </div>
-
-            {/* Results List */}
-            <div className="divide-y divide-gray-800/50">
-              {results.map((result, index) => {
-                const isTopThree = typeof result.Rank === 'number' && result.Rank <= 3;
-
-                let rankDisplay = result.Rank || '-';
-                let rankColor = 'text-gray-400';
-                let rowBg = 'hover:bg-gray-800/30';
-
-                if (isTopThree && typeof result.Rank === 'number') {
-                  rowBg = 'bg-gradient-to-r';
-                  if (result.Rank === 1) {
-                    rankDisplay = `🥇 ${result.Rank}`;
-                    rankColor = 'text-yellow-400 font-bold';
-                    rowBg += ' from-yellow-500/10 to-transparent hover:from-yellow-500/20';
-                  } else if (result.Rank === 2) {
-                    rankDisplay = `🥈 ${result.Rank}`;
-                    rankColor = 'text-gray-300 font-bold';
-                    rowBg += ' from-gray-500/10 to-transparent hover:from-gray-500/20';
-                  } else if (result.Rank === 3) {
-                    rankDisplay = `🥉 ${result.Rank}`;
-                    rankColor = 'text-orange-400 font-bold';
-                    rowBg += ' from-orange-500/10 to-transparent hover:from-orange-500/20';
-                  }
-                }
-
-                return (
-                  <div
-                    key={result.IBUId || index}
-                    className={`grid grid-cols-12 gap-4 px-6 py-4 transition-colors ${rowBg}`}
-                  >
-                    <div className={`col-span-1 text-center font-bold ${rankColor}`}>
-                      {rankDisplay}
-                    </div>
-                    <div className="col-span-1 text-center text-gray-500">
-                      #{result.Bib}
-                    </div>
-                    <div className="col-span-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{getFlagEmoji(result.Nat)}</span>
-                        <div>
-                          <Link
-                            href={`/${locale}/athlete/${result.IBUId}`}
-                            className="hover:text-cyan-400 transition-colors"
-                          >
-                            <div className="font-semibold text-white hover:underline">
-                              {result.FamilyName}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {result.GivenName}
-                            </div>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-span-2 text-center">
-                      <span className="inline-flex items-center justify-center px-3 py-1 bg-gray-800/50 text-cyan-400 font-mono text-sm border border-gray-700/50">
-                        {result.ShootingTotal || '-'}
-                      </span>
-                    </div>
-                    <div className="col-span-2 text-center font-mono text-white font-bold">
-                      {result.TotalTime || '-'}
-                    </div>
-                    <div className="col-span-2 text-center text-gray-400 font-mono text-sm">
-                      {result.Behind ? `+${result.Behind}` : '-'}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <RaceTabs
+          locale={locale}
+          results={results}
+          intermediates={intermediates}
+          rangeAnalysis={rangeAnalysis}
+          courseAnalysis={courseAnalysis}
+          preTimes={preTimes}
+          status={status}
+          statusConfig={statusConfig}
+        />
 
         {/* Auto-refresh notice for live races */}
         {status === 'live' && results.length > 0 && (
