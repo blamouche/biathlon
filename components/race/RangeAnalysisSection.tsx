@@ -16,53 +16,53 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto p-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Shooting Times Section */}
         <div>
-          <h3 className="text-lg font-bold bg-blue-900 text-white px-4 py-2 mb-2">
+          <h3 className="text-lg font-bold bg-blue-600 text-white px-4 py-2 mb-2 rounded-t">
             TEMPS DE TIR (SHOOTING TIME)
           </h3>
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-blue-800 text-white">
-                <th className="border border-gray-300 px-2 py-1 text-left">BIB</th>
-                <th className="border border-gray-300 px-2 py-1 text-left">ATHLETE</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">1</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">2</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">3</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">4</th>
-                <th className="border border-gray-300 px-2 py-1 text-center bg-blue-700">TOTAL</th>
+              <tr className="bg-gray-800 text-gray-100">
+                <th className="border border-gray-700 px-2 py-1 text-left">BIB</th>
+                <th className="border border-gray-700 px-2 py-1 text-left">ATHLETE</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">1</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">2</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">3</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">4</th>
+                <th className="border border-gray-700 px-2 py-1 text-center bg-blue-600">TOTAL</th>
               </tr>
             </thead>
             <tbody>
               {data.Athletes.map((athlete, idx) => (
                 <tr
                   key={`shoot-${athlete.IBUId}`}
-                  className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                  className={idx % 2 === 0 ? 'bg-gray-900' : 'bg-gray-800'}
                 >
-                  <td className="border border-gray-300 px-2 py-1 font-bold">
+                  <td className="border border-gray-700 px-2 py-1 font-bold text-cyan-400">
                     {athlete.Bib}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1">
+                  <td className="border border-gray-700 px-2 py-1">
                     <div className="text-xs">
-                      <span className="font-semibold">{athlete.FamilyName}</span>
-                      <span className="ml-1 text-gray-600">{athlete.Nat}</span>
+                      <span className="font-semibold text-white">{athlete.FamilyName}</span>
+                      <span className="ml-1 text-gray-400">{athlete.Nat}</span>
                     </div>
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.ShootingTime1 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.ShootingTime2 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.ShootingTime3 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.ShootingTime4 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center font-bold bg-blue-50">
+                  <td className="border border-gray-700 px-2 py-1 text-center font-bold bg-blue-900 text-blue-200">
                     {athlete.ShootingTotalTime || '-'}
                   </td>
                 </tr>
@@ -73,49 +73,49 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
 
         {/* Range Times Section */}
         <div>
-          <h3 className="text-lg font-bold bg-green-900 text-white px-4 py-2 mb-2">
+          <h3 className="text-lg font-bold bg-green-600 text-white px-4 py-2 mb-2 rounded-t">
             TEMPS AU STAND (RANGE TIME)
           </h3>
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-green-800 text-white">
-                <th className="border border-gray-300 px-2 py-1 text-left">BIB</th>
-                <th className="border border-gray-300 px-2 py-1 text-left">ATHLETE</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">1</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">2</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">3</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">4</th>
-                <th className="border border-gray-300 px-2 py-1 text-center bg-green-700">TOTAL</th>
+              <tr className="bg-gray-800 text-gray-100">
+                <th className="border border-gray-700 px-2 py-1 text-left">BIB</th>
+                <th className="border border-gray-700 px-2 py-1 text-left">ATHLETE</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">1</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">2</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">3</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">4</th>
+                <th className="border border-gray-700 px-2 py-1 text-center bg-green-600">TOTAL</th>
               </tr>
             </thead>
             <tbody>
               {data.Athletes.map((athlete, idx) => (
                 <tr
                   key={`range-${athlete.IBUId}`}
-                  className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                  className={idx % 2 === 0 ? 'bg-gray-900' : 'bg-gray-800'}
                 >
-                  <td className="border border-gray-300 px-2 py-1 font-bold">
+                  <td className="border border-gray-700 px-2 py-1 font-bold text-cyan-400">
                     {athlete.Bib}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1">
+                  <td className="border border-gray-700 px-2 py-1">
                     <div className="text-xs">
-                      <span className="font-semibold">{athlete.FamilyName}</span>
-                      <span className="ml-1 text-gray-600">{athlete.Nat}</span>
+                      <span className="font-semibold text-white">{athlete.FamilyName}</span>
+                      <span className="ml-1 text-gray-400">{athlete.Nat}</span>
                     </div>
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.RangeTime1 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.RangeTime2 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.RangeTime3 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center">
+                  <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                     {athlete.RangeTime4 || '-'}
                   </td>
-                  <td className="border border-gray-300 px-2 py-1 text-center font-bold bg-green-50">
+                  <td className="border border-gray-700 px-2 py-1 text-center font-bold bg-green-900 text-green-200">
                     {athlete.RangeTotalTime || '-'}
                   </td>
                 </tr>
@@ -126,20 +126,20 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
 
         {/* Shooting Results Section */}
         <div className="lg:col-span-2">
-          <h3 className="text-lg font-bold bg-yellow-900 text-white px-4 py-2 mb-2">
+          <h3 className="text-lg font-bold bg-yellow-600 text-white px-4 py-2 mb-2 rounded-t">
             RÉSULTATS DE TIR (SHOOTING RESULTS)
           </h3>
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-yellow-800 text-white">
-                <th className="border border-gray-300 px-2 py-1 text-left">BIB</th>
-                <th className="border border-gray-300 px-2 py-1 text-left">ATHLETE</th>
-                <th className="border border-gray-300 px-2 py-1 text-left">NAT</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">STAND 1</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">STAND 2</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">STAND 3</th>
-                <th className="border border-gray-300 px-2 py-1 text-center">STAND 4</th>
-                <th className="border border-gray-300 px-2 py-1 text-center bg-yellow-700">ERREURS</th>
+              <tr className="bg-gray-800 text-gray-100">
+                <th className="border border-gray-700 px-2 py-1 text-left">BIB</th>
+                <th className="border border-gray-700 px-2 py-1 text-left">ATHLETE</th>
+                <th className="border border-gray-700 px-2 py-1 text-left">NAT</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">STAND 1</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">STAND 2</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">STAND 3</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">STAND 4</th>
+                <th className="border border-gray-700 px-2 py-1 text-center bg-yellow-600">ERREURS</th>
               </tr>
             </thead>
             <tbody>
@@ -148,34 +148,34 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
                 return (
                   <tr
                     key={`shooting-${athlete.IBUId}`}
-                    className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                    className={idx % 2 === 0 ? 'bg-gray-900' : 'bg-gray-800'}
                   >
-                    <td className="border border-gray-300 px-2 py-1 font-bold">
+                    <td className="border border-gray-700 px-2 py-1 font-bold text-cyan-400">
                       {athlete.Bib}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1">
+                    <td className="border border-gray-700 px-2 py-1">
                       <div className="text-xs">
-                        <div className="font-semibold">{athlete.FamilyName.toUpperCase()}</div>
-                        <div className="text-gray-600">{athlete.GivenName}</div>
+                        <div className="font-semibold text-white">{athlete.FamilyName.toUpperCase()}</div>
+                        <div className="text-gray-400">{athlete.GivenName}</div>
                       </div>
                     </td>
-                    <td className="border border-gray-300 px-2 py-1">
-                      <span className="font-semibold">{athlete.Nat}</span>
+                    <td className="border border-gray-700 px-2 py-1">
+                      <span className="font-semibold text-gray-100">{athlete.Nat}</span>
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-center">
+                    <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                       {athlete.Shooting1 || '-'}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-center">
+                    <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                       {athlete.Shooting2 || '-'}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-center">
+                    <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                       {athlete.Shooting3 || '-'}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-center">
+                    <td className="border border-gray-700 px-2 py-1 text-center text-gray-100">
                       {athlete.Shooting4 || '-'}
                     </td>
-                    <td className={`border border-gray-300 px-2 py-1 text-center font-bold ${
-                      totalMisses === 0 ? 'bg-green-100' : totalMisses > 3 ? 'bg-red-100' : 'bg-yellow-50'
+                    <td className={`border border-gray-700 px-2 py-1 text-center font-bold ${
+                      totalMisses === 0 ? 'bg-green-900 text-green-200' : totalMisses > 3 ? 'bg-red-900 text-red-200' : 'bg-yellow-900 text-yellow-200'
                     }`}>
                       {athlete.ShootingTotal || '-'}
                     </td>
