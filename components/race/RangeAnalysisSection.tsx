@@ -10,7 +10,7 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
   if (!data || !data.Athletes || data.Athletes.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
-        <p>Aucune analyse des tirs disponible pour cette course.</p>
+        <p>No shooting analysis available for this race.</p>
       </div>
     );
   }
@@ -21,7 +21,7 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
         {/* Shooting Times Section */}
         <div>
           <h3 className="text-lg font-bold bg-blue-600 text-white px-4 py-2 mb-2 rounded-t">
-            TEMPS DE TIR (SHOOTING TIME)
+            SHOOTING TIME
           </h3>
           <table className="w-full border-collapse text-sm">
             <thead>
@@ -74,7 +74,7 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
         {/* Range Times Section */}
         <div>
           <h3 className="text-lg font-bold bg-green-600 text-white px-4 py-2 mb-2 rounded-t">
-            TEMPS AU STAND (RANGE TIME)
+            RANGE TIME
           </h3>
           <table className="w-full border-collapse text-sm">
             <thead>
@@ -127,7 +127,7 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
         {/* Shooting Results Section */}
         <div className="lg:col-span-2">
           <h3 className="text-lg font-bold bg-yellow-600 text-white px-4 py-2 mb-2 rounded-t">
-            RÉSULTATS DE TIR (SHOOTING RESULTS)
+            SHOOTING RESULTS
           </h3>
           <table className="w-full border-collapse text-sm">
             <thead>
@@ -135,8 +135,8 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
                 <th className="border border-gray-700 px-2 py-1 text-left">BIB</th>
                 <th className="border border-gray-700 px-2 py-1 text-left">ATHLETE</th>
                 <th className="border border-gray-700 px-2 py-1 text-left">NAT</th>
-                <th className="border border-gray-700 px-2 py-1 text-center">TIRS (P+S)</th>
-                <th className="border border-gray-700 px-2 py-1 text-center bg-yellow-600">ERREURS</th>
+                <th className="border border-gray-700 px-2 py-1 text-center">SHOTS (P+S)</th>
+                <th className="border border-gray-700 px-2 py-1 text-center bg-yellow-600">MISSES</th>
               </tr>
             </thead>
             <tbody>
@@ -174,8 +174,8 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
           </table>
           <div className="mt-4 p-4 bg-gray-800 border border-gray-700 rounded">
             <p className="text-sm text-gray-300">
-              <strong className="text-white">Format TIRS:</strong> Les résultats de tir sont affichés au format "P+S"
-              (Prone/Couché + Standing/Debout). Par exemple, "0+1" signifie 0 erreur en position couchée et 1 erreur en position debout.
+              <strong className="text-white">SHOOTING FORMAT:</strong> Shooting results are displayed in "P+S" format
+              (Prone + Standing). For example, "0+1" means 0 misses in prone position and 1 miss in standing position.
             </p>
           </div>
         </div>
