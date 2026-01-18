@@ -13,12 +13,22 @@ interface Competition {
   eventId: string
 }
 
+interface Event {
+  EventId: string
+  Description: string
+  ShortDescription: string
+  StartDate: string
+  EndDate: string
+}
+
 export default function MarketTable({
   competitions,
   locale,
+  nextEvent,
 }: {
   competitions: Competition[]
   locale: string
+  nextEvent?: Event | null
 }) {
   const [time, setTime] = useState(new Date())
 
@@ -28,6 +38,25 @@ export default function MarketTable({
     }, 1000)
     return () => clearInterval(timer)
   }, [])
+
+  // If no competitions and no nextEvent, show empty state
+  if (competitions.length === 0 && !nextEvent) {
+    return (
+      <div className="space-y-4">
+        <div className="border border-cyan-500/30 bg-black/40 p-4">
+          <h2 className="text-cyan-400 text-lg font-bold tracking-wider">
+            [RACE MONITOR]
+          </h2>
+        </div>
+
+        <div className="border border-gray-700/30 bg-black/20 p-8">
+          <div className="text-center text-gray-500">
+            Aucune course disponible
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // Trier par statut et date
   const sortedCompetitions = [...competitions].sort((a, b) => {
@@ -45,6 +74,70 @@ export default function MarketTable({
     // Sinon par date
     return new Date(a.StartTime).getTime() - new Date(b.StartTime).getTime()
   })
+
+  // If no competitions and nextEvent is provided, show countdown
+  if (competitions.length === 0 && nextEvent) {
+    const startTime = new Date(nextEvent.StartDate)
+    const diff = startTime.getTime() - time.getTime()
+    const diffSeconds = Math.floor(diff / 1000)
+    const diffMinutes = Math.floor(diffSeconds / 60)
+    const diffHours = Math.floor(diffMinutes / 60)
+    const diffDays = Math.floor(diffHours / 24)
+
+    let countdown = ''
+    if (diffDays > 0) {
+      countdown = `${diffDays}j ${diffHours % 24}h ${diffMinutes % 60}m ${diffSeconds % 60}s`
+    } else if (diffHours > 0) {
+      countdown = `${diffHours}h ${diffMinutes % 60}m ${diffSeconds % 60}s`
+    } else if (diffMinutes > 0) {
+      countdown = `${diffMinutes}m ${diffSeconds % 60}s`
+    } else if (diffSeconds > 0) {
+      countdown = `${diffSeconds}s`
+    } else {
+      countdown = 'Démarrage imminent...'
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="border border-cyan-500/30 bg-black/40 p-4">
+          <h2 className="text-cyan-400 text-lg font-bold tracking-wider">
+            [RACE MONITOR]
+          </h2>
+        </div>
+
+        <div className="border border-yellow-500/30 bg-black/20 p-8">
+          <div className="text-center space-y-4">
+            <div className="text-yellow-400 text-sm font-bold tracking-wider">
+              AUCUNE ÉTAPE ACTIVE
+            </div>
+            <div className="text-gray-400 text-xs">
+              Prochaine étape:
+            </div>
+            <div className="text-white text-2xl font-bold">
+              {nextEvent.Description}
+            </div>
+            <div className="text-cyan-400 text-lg">
+              {nextEvent.ShortDescription}
+            </div>
+            <div className="text-gray-500 text-sm">
+              {startTime.toLocaleDateString(locale, {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </div>
+            <div className="mt-6">
+              <div className="text-gray-500 text-xs mb-2">COMPTE À REBOURS</div>
+              <div className="text-green-400 text-4xl font-bold font-mono animate-pulse">
+                {countdown}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
