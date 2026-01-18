@@ -15,16 +15,25 @@ export default async function Home({
 
   const events = await BiathlonAPI.getEvents()
 
-  // Get competitions for current AND upcoming events
-  const activeEvents = events.filter(event => {
-    const now = new Date()
+  // Find current live events (where today is between StartDate and EndDate)
+  const now = new Date()
+  const currentLiveEvents = events.filter(event => {
+    const start = new Date(event.StartDate)
     const end = new Date(event.EndDate)
-    // Include events not yet finished
-    return end >= now
+    return now >= start && now <= end
   })
 
+  // Get competitions for current live events (current world cup stage)
+  // If no events are currently live, fall back to all upcoming/active events
+  const eventsToShow = currentLiveEvents.length > 0
+    ? currentLiveEvents
+    : events.filter(event => {
+        const end = new Date(event.EndDate)
+        return end >= now
+      })
+
   const allCompetitions = await Promise.all(
-    activeEvents.map(async event => {
+    eventsToShow.map(async event => {
       const competitions = await BiathlonAPI.getCompetitions(event.EventId)
       return competitions.map(comp => ({
         ...comp,
@@ -35,6 +44,12 @@ export default async function Home({
   )
 
   const competitions = allCompetitions.flat()
+
+  // Get all active events for stats
+  const activeEvents = events.filter(event => {
+    const end = new Date(event.EndDate)
+    return end >= now
+  })
 
   // Calculate statistics
   const totalEvents = events.length

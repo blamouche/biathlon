@@ -16,16 +16,25 @@ export default async function DashboardPage({
 
   const events = await BiathlonAPI.getEvents()
 
-  // Get all competitions for current events
-  const liveEvents = events.filter(event => {
-    const now = new Date()
+  // Find current live events (current world cup stage)
+  const now = new Date()
+  const currentLiveEvents = events.filter(event => {
     const start = new Date(event.StartDate)
     const end = new Date(event.EndDate)
     return now >= start && now <= end
   })
 
+  // Get competitions for current live events (current world cup stage)
+  // If no events are currently live, fall back to all upcoming/active events
+  const eventsToShow = currentLiveEvents.length > 0
+    ? currentLiveEvents
+    : events.filter(event => {
+        const end = new Date(event.EndDate)
+        return end >= now
+      })
+
   const allCompetitions = await Promise.all(
-    liveEvents.map(async event => {
+    eventsToShow.map(async event => {
       const competitions = await BiathlonAPI.getCompetitions(event.EventId)
       return competitions.map(comp => ({
         ...comp,
@@ -39,7 +48,7 @@ export default async function DashboardPage({
 
   // Calculate statistics
   const totalEvents = events.length
-  const liveEventsCount = liveEvents.length
+  const liveEventsCount = currentLiveEvents.length
   const totalCompetitions = competitions.length
   const liveCompetitions = competitions.filter(comp => {
     const status = BiathlonAPI.getRaceStatus(comp.StartTime)
