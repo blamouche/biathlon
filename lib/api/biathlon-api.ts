@@ -210,7 +210,27 @@ export class BiathlonAPI {
 
       const data = await response.json();
 
-      // The API might return data in different structures
+      // The API returns data in a Rows array
+      if (data?.Rows && Array.isArray(data.Rows)) {
+        // Transform the data to match our StandingsEntry interface
+        return data.Rows.map((row: any) => {
+          // Name is in format "FAMILY Given" - split it
+          const nameParts = row.Name ? row.Name.split(' ') : ['', ''];
+          const familyName = nameParts[0] || '';
+          const givenName = nameParts.slice(1).join(' ') || '';
+
+          return {
+            Rank: row.Rank,
+            IBUId: row.IBUId,
+            FamilyName: familyName,
+            GivenName: givenName,
+            Nat: row.Nat,
+            TotalScore: parseInt(row.Score) || 0,
+          };
+        });
+      }
+
+      // Fallback to other possible structures
       if (Array.isArray(data)) {
         return data;
       } else if (data?.Standings && Array.isArray(data.Standings)) {
