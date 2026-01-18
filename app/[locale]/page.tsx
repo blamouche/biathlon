@@ -15,11 +15,11 @@ export default async function Home({
 
   const events = await BiathlonAPI.getEvents()
 
-  // Récupérer les compétitions pour les événements en cours ET à venir
+  // Get competitions for current AND upcoming events
   const activeEvents = events.filter(event => {
     const now = new Date()
     const end = new Date(event.EndDate)
-    // Inclure les événements non encore terminés
+    // Include events not yet finished
     return end >= now
   })
 
@@ -36,7 +36,7 @@ export default async function Home({
 
   const competitions = allCompetitions.flat()
 
-  // Calculer les statistiques
+  // Calculate statistics
   const totalEvents = events.length
   const liveEventsCount = events.filter(event => {
     const now = new Date()
@@ -168,6 +168,7 @@ export default async function Home({
           <div className="text-center text-gray-500 text-xs space-y-1">
             <p>DATA SOURCE: BIATHLONRESULTS.COM • UPDATE FREQUENCY: 30s</p>
             <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
+            <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
           </div>
         </div>
       </div>

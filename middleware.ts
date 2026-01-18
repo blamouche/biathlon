@@ -2,18 +2,18 @@ import createMiddleware from 'next-intl/middleware';
 import { locales } from './i18n';
 
 export default createMiddleware({
-  // Liste des langues supportées
+  // Supported languages
   locales,
 
-  // Langue par défaut
-  defaultLocale: 'fr',
+  // Default language
+  defaultLocale: 'en',
 
-  // Toujours inclure le préfixe de locale dans l'URL
+  // Always include locale prefix in URL
   localePrefix: 'always',
 });
 
 export const config = {
-  // Matcher pour appliquer le middleware à toutes les routes
-  // sauf les fichiers statiques, images, etc.
+  // Matcher to apply middleware to all routes
+  // except static files, images, etc.
   matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 };

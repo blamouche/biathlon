@@ -10,7 +10,7 @@ export function IntermediatesSection({ data }: IntermediatesSectionProps) {
   if (!data || !data.Athletes || data.Athletes.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
-        <p>Aucune donnée intermédiaire disponible pour cette course.</p>
+        <p>No intermediate data available for this race.</p>
       </div>
     );
   }

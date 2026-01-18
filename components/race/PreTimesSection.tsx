@@ -10,7 +10,7 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
   if (!data || !data.Athletes || data.Athletes.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
-        <p>Aucune donnée de pré-temps disponible pour cette course.</p>
+        <p>No pre-times data available for this race.</p>
       </div>
     );
   }
@@ -86,8 +86,8 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
 
       <div className="mt-4 p-4 bg-gray-800 border border-gray-700 rounded">
         <p className="text-sm text-gray-300">
-          <strong className="text-white">Note:</strong> Les pré-temps indiquent la distance restante avant chaque checkpoint.
-          Par exemple, "0.5km" signifie que l'athlète est à 500 mètres du checkpoint.
+          <strong className="text-white">Note:</strong> Pre-times indicate the remaining distance before each checkpoint.
+          For example, "0.5km" means the athlete is 500 meters from the checkpoint.
         </p>
       </div>
     </div>

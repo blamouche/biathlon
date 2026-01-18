@@ -13,7 +13,7 @@ interface AthletePageProps {
 export default async function AthletePage({ params }: AthletePageProps) {
   const { locale, ibuId } = await params;
 
-  // Récupérer les données de l'athlète
+  // Get athlete data
   const athleteBio = await BiathlonAPI.getAthleteBio(ibuId);
   const results = await BiathlonAPI.getAthleteResults(ibuId);
 
@@ -65,7 +65,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
     return rankNum;
   };
 
-  // Calculer les statistiques
+  // Calculate statistics
   const totalRaces = results.length;
   const podiums = results.filter(r => {
     const rank = typeof r.Rank === 'string' ? parseInt(r.Rank) : r.Rank;
@@ -270,8 +270,10 @@ export default async function AthletePage({ params }: AthletePageProps) {
       {/* Footer */}
       <div className="border-t border-green-500/30 bg-black/40 mt-12">
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center text-gray-500 text-xs">
+          <div className="text-center text-gray-500 text-xs space-y-1">
             <p>DATA SOURCE: BIATHLONRESULTS.COM • ATHLETE ID: {ibuId}</p>
+            <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
+            <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
           </div>
         </div>
       </div>

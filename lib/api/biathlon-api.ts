@@ -5,15 +5,15 @@ const API_BASE = 'https://biathlonresults.com/modules/sportapi/api';
 export class BiathlonAPI {
 
   /**
-   * Récupère les événements de la coupe du monde pour une saison
-   * @param seasonId - Format: "2425" pour 2024-2025
+   * Fetch World Cup events for a season
+   * @param seasonId - Format: "2425" for 2024-2025
    */
   static async getEvents(seasonId: string = '2526'): Promise<Event[]> {
     try {
       const response = await fetch(
         `${API_BASE}/Events?SeasonId=${seasonId}&Level=1`,
         {
-          next: { revalidate: 3600 }, // Cache pour 1 heure
+          next: { revalidate: 3600 }, // Cache for 1 hour
         }
       );
 
@@ -30,14 +30,14 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les compétitions pour un événement spécifique
+   * Fetch competitions for a specific event
    */
   static async getCompetitions(eventId: string): Promise<Competition[]> {
     try {
       const response = await fetch(
         `${API_BASE}/Competitions?EventId=${eventId}`,
         {
-          next: { revalidate: 600 }, // Cache pour 10 minutes
+          next: { revalidate: 600 }, // Cache for 10 minutes
         }
       );
 
@@ -54,14 +54,14 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les résultats d'une course
+   * Fetch race results
    */
   static async getResults(raceId: string): Promise<RaceResult[]> {
     try {
       const response = await fetch(
         `${API_BASE}/Results?RaceId=${raceId}`,
         {
-          next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
+          next: { revalidate: 60 }, // Cache for 1 minute (for live data)
         }
       );
 
@@ -78,7 +78,7 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les détails complets d'une course
+   * Fetch complete race details
    */
   static async getRaceDetails(raceId: string): Promise<RaceDetails | null> {
     try {
@@ -102,7 +102,7 @@ export class BiathlonAPI {
   }
 
   /**
-   * Détermine le statut d'une course (à venir, en cours, terminée)
+   * Determine race status (upcoming, live, finished)
    */
   static getRaceStatus(startTime: string): 'upcoming' | 'live' | 'finished' {
     const now = new Date();
@@ -119,14 +119,14 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les informations biographiques d'un athlète
+   * Fetch athlete biographical information
    */
   static async getAthleteBio(ibuId: string): Promise<AthleteBio | null> {
     try {
       const response = await fetch(
         `${API_BASE}/CISBios?IBUId=${ibuId}`,
         {
-          next: { revalidate: 86400 }, // Cache pour 24 heures
+          next: { revalidate: 86400 }, // Cache for 24 hours
         }
       );
 
@@ -143,19 +143,19 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les résultats d'un athlète pour une saison
+   * Fetch athlete results for a season
    */
   static async getAthleteResults(ibuId: string, seasonId: string = '2526'): Promise<AthleteResult[]> {
     try {
-      // Récupère tous les événements de la saison
+      // Fetch all season events
       const events = await this.getEvents(seasonId);
       const results: AthleteResult[] = [];
 
-      // Pour chaque événement, récupère les compétitions
+      // For each event, fetch competitions
       for (const event of events) {
         const competitions = await this.getCompetitions(event.EventId);
 
-        // Pour chaque compétition, vérifie si l'athlète a participé
+        // For each competition, check if athlete participated
         for (const comp of competitions) {
           const raceResults = await this.getResults(comp.RaceId);
           const athleteResult = raceResults.find(r => r.IBUId === ibuId);
@@ -185,14 +185,14 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère le classement général de la Coupe du monde pour une catégorie
+   * Fetch World Cup overall standings for a category
    */
   static async getStandings(categoryId: string = 'SM', seasonId: string = '2526') {
     try {
       const response = await fetch(
         `${API_BASE}/Standings?SeasonId=${seasonId}&Level=1&CategoryId=${categoryId}`,
         {
-          next: { revalidate: 3600 }, // Cache pour 1 heure
+          next: { revalidate: 3600 }, // Cache for 1 hour
         }
       );
 
@@ -209,9 +209,9 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les données analytiques d'une course
-   * @param raceId - ID de la course
-   * @param typeId - Type d'analyse (ex: "CRST" pour course time, "RNGT" pour range time, "STTM" pour shooting time)
+   * Fetch race analytical data
+   * @param raceId - Race ID
+   * @param typeId - Analysis type (e.g., "CRST" for course time, "RNGT" for range time, "STTM" for shooting time)
    */
   static async getAnalyticResults(raceId: string, typeId: string): Promise<any> {
     try {
@@ -219,7 +219,7 @@ export class BiathlonAPI {
       console.log(`[API] Fetching ${typeId} for race ${raceId}...`);
 
       const response = await fetch(url, {
-        next: { revalidate: 60 }, // Cache pour 1 minute (pour le live)
+        next: { revalidate: 60 }, // Cache for 1 minute (for live data)
       });
 
       console.log(`[API] ${typeId} response status: ${response.status}`);
@@ -245,11 +245,11 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les données des points intermédiaires d'une course
+   * Fetch intermediate checkpoint data for a race
    */
   static async getIntermediates(raceId: string): Promise<IntermediatesData | null> {
     try {
-      // Récupérer tous les temps de parcours par tour
+      // Fetch all lap times
       const courseTimesPromises = [];
       for (let i = 1; i <= 12; i++) {
         courseTimesPromises.push(
@@ -259,13 +259,13 @@ export class BiathlonAPI {
 
       const courseTimes = await Promise.all(courseTimesPromises);
 
-      // Si aucune donnée n'est disponible
+      // If no data is available
       if (courseTimes.every(ct => !ct || !ct.Results)) {
         return null;
       }
 
-      // Transformer les données en format IntermediatesData
-      // TODO: Adapter selon le format réel retourné par l'API
+      // Transform data to IntermediatesData format
+      // TODO: Adapt to actual API format
       return null;
     } catch (error) {
       console.error('Error fetching intermediates:', error);
@@ -274,11 +274,11 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les données d'analyse des tirs au stand
+   * Fetch shooting range analysis data
    */
   static async getRangeAnalysis(raceId: string): Promise<RangeAnalysisData | null> {
     try {
-      // Récupérer les temps de tir (shooting times) et temps au stand (range times)
+      // Fetch shooting times and range times
       const [
         shootingTime1, shootingTime2, shootingTime3, shootingTime4,
         rangeTime1, rangeTime2, rangeTime3, rangeTime4,
@@ -296,15 +296,15 @@ export class BiathlonAPI {
         this.getAnalyticResults(raceId, 'RNGT'),
       ]);
 
-      // Si aucune donnée n'est disponible
+      // If no data is available
       if (!shootingTime1?.Results && !rangeTime1?.Results) {
         return null;
       }
 
-      // Combiner toutes les données par athlète
+      // Combine all data by athlete
       const athletesMap = new Map();
 
-      // Fonction helper pour fusionner les données
+      // Helper function to merge data
       const mergeResults = (data: any, field: string) => {
         if (!data?.Results) return;
         data.Results.forEach((result: any) => {
@@ -333,7 +333,7 @@ export class BiathlonAPI {
       mergeResults(totalShootingTime, 'ShootingTotalTime');
       mergeResults(totalRangeTime, 'RangeTotalTime');
 
-      // Ajouter les résultats de tir depuis les résultats de base
+      // Add shooting results from base results
       const results = await this.getResults(raceId);
       results.forEach(result => {
         const athlete = athletesMap.get(result.IBUId);
@@ -354,13 +354,13 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les données d'analyse des temps de parcours
+   * Fetch course time analysis data
    */
   static async getCourseAnalysis(raceId: string): Promise<CourseAnalysisData | null> {
     try {
-      // Récupérer les temps de tour (lap times)
-      // Note: Les TypeIds CRST1-5 n'existent pas dans l'API
-      // CRS1-12 correspondent aux temps de tour, mais seuls CRS1-3 sont disponibles pour les Sprints
+      // Fetch lap times
+      // Note: TypeIds CRST1-5 don't exist in the API
+      // CRS1-12 correspond to lap times, but only CRS1-3 are available for Sprints
       const [
         lapTime1, lapTime2, lapTime3, lapTime4, lapTime5,
         totalCourseTime
@@ -373,12 +373,12 @@ export class BiathlonAPI {
         this.getAnalyticResults(raceId, 'CRST'),
       ]);
 
-      // Si aucune donnée n'est disponible
+      // If no data is available
       if (!lapTime1?.Results && !totalCourseTime?.Results) {
         return null;
       }
 
-      // Combiner toutes les données par athlète
+      // Combine all data by athlete
       const athletesMap = new Map();
 
       const mergeResults = (data: any, field: string) => {
@@ -416,11 +416,11 @@ export class BiathlonAPI {
   }
 
   /**
-   * Récupère les données de pré-temps (distances aux checkpoints)
-   * Note: Cette fonctionnalité n'est pas disponible via l'API publique
+   * Fetch pre-times data (distances to checkpoints)
+   * Note: This feature is not available via the public API
    */
   static async getPreTimes(raceId: string): Promise<PreTimesData | null> {
-    // Les pré-temps ne sont pas disponibles via l'API publique
+    // Pre-times are not available via the public API
     return null;
   }
 }

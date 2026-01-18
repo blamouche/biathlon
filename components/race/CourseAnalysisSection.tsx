@@ -10,7 +10,7 @@ export function CourseAnalysisSection({ data }: CourseAnalysisSectionProps) {
   if (!data || !data.Athletes || data.Athletes.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
-        <p>Aucune analyse de parcours disponible pour cette course.</p>
+        <p>No course analysis available for this race.</p>
       </div>
     );
   }
@@ -20,7 +20,7 @@ export function CourseAnalysisSection({ data }: CourseAnalysisSectionProps) {
       {/* Lap Times Section */}
       <div>
         <h3 className="text-lg font-bold bg-purple-600 text-white px-4 py-2 mb-2 rounded-t">
-          TEMPS DE PARCOURS (LAP TIME)
+          LAP TIME
         </h3>
         <table className="w-full border-collapse text-sm">
           <thead>
