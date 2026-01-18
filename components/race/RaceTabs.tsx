@@ -25,6 +25,9 @@ interface RaceTabsProps {
   statusConfig: any;
 }
 
+type SortColumn = 'rank' | 'bib' | 'athlete' | 'shooting' | 'time' | 'behind' | null;
+type SortDirection = 'asc' | 'desc';
+
 export function RaceTabs({
   locale,
   results,
@@ -36,6 +39,8 @@ export function RaceTabs({
   statusConfig,
 }: RaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('results');
+  const [sortColumn, setSortColumn] = useState<SortColumn>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   const tabs: Tab[] = [
     { id: 'results', label: 'RESULTS', shortLabel: 'RESULTS' },
@@ -44,6 +49,81 @@ export function RaceTabs({
   ];
 
   const config = statusConfig[status];
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  const timeToSeconds = (timeStr: string | null | undefined): number => {
+    if (!timeStr) return Infinity;
+    const parts = timeStr.split(':');
+    if (parts.length === 2) {
+      const [mins, secs] = parts;
+      return parseInt(mins) * 60 + parseFloat(secs);
+    }
+    return Infinity;
+  };
+
+  const getSortedResults = () => {
+    if (!sortColumn) return results;
+
+    return [...results].sort((a, b) => {
+      let aVal: any;
+      let bVal: any;
+
+      switch (sortColumn) {
+        case 'rank':
+          aVal = typeof a.Rank === 'number' ? a.Rank : Infinity;
+          bVal = typeof b.Rank === 'number' ? b.Rank : Infinity;
+          break;
+        case 'bib':
+          aVal = a.Bib || 0;
+          bVal = b.Bib || 0;
+          break;
+        case 'athlete':
+          aVal = a.FamilyName?.toLowerCase() || '';
+          bVal = b.FamilyName?.toLowerCase() || '';
+          break;
+        case 'shooting':
+          aVal = parseInt(a.ShootingTotal || '99');
+          bVal = parseInt(b.ShootingTotal || '99');
+          break;
+        case 'time':
+          aVal = timeToSeconds(a.TotalTime);
+          bVal = timeToSeconds(b.TotalTime);
+          break;
+        case 'behind':
+          aVal = timeToSeconds(a.Behind);
+          bVal = timeToSeconds(b.Behind);
+          break;
+        default:
+          return 0;
+      }
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const SortableHeader = ({ column, children, className = '' }: { column: SortColumn; children: React.ReactNode; className?: string }) => (
+    <div
+      onClick={() => handleSort(column)}
+      className={`cursor-pointer hover:text-cyan-400 transition-colors select-none ${className}`}
+    >
+      {children}
+      {sortColumn === column && (
+        <span className="ml-1 text-cyan-400">
+          {sortDirection === 'asc' ? '↑' : '↓'}
+        </span>
+      )}
+    </div>
+  );
 
   const getFlagEmoji = (countryCode: string) => {
     if (!countryCode || countryCode.length !== 3) return '🏳️';
@@ -110,18 +190,30 @@ export function RaceTabs({
                 {/* Table Header */}
                 <div className="bg-gray-900/50 px-6 py-3 border-b border-gray-700/50">
                   <div className="grid grid-cols-12 gap-4 text-gray-500 font-bold text-xs uppercase tracking-wider">
-                    <div className="col-span-1 text-center">RANK</div>
-                    <div className="col-span-1 text-center">BIB</div>
-                    <div className="col-span-4">ATHLETE</div>
-                    <div className="col-span-2 text-center">SHOOTING</div>
-                    <div className="col-span-2 text-center">TIME</div>
-                    <div className="col-span-2 text-center">BEHIND</div>
+                    <SortableHeader column="rank" className="col-span-1 text-center">
+                      RANK
+                    </SortableHeader>
+                    <SortableHeader column="bib" className="col-span-1 text-center">
+                      BIB
+                    </SortableHeader>
+                    <SortableHeader column="athlete" className="col-span-4">
+                      ATHLETE
+                    </SortableHeader>
+                    <SortableHeader column="shooting" className="col-span-2 text-center">
+                      SHOOTING
+                    </SortableHeader>
+                    <SortableHeader column="time" className="col-span-2 text-center">
+                      TIME
+                    </SortableHeader>
+                    <SortableHeader column="behind" className="col-span-2 text-center">
+                      BEHIND
+                    </SortableHeader>
                   </div>
                 </div>
 
                 {/* Results List */}
                 <div className="divide-y divide-gray-800/50">
-                  {results.map((result, index) => {
+                  {getSortedResults().map((result, index) => {
                     const isTopThree =
                       typeof result.Rank === 'number' && result.Rank <= 3;
 
