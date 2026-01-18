@@ -29,7 +29,9 @@ export function IntermediatesSection({ data }: IntermediatesSectionProps) {
       const [mins, secs] = parts;
       return parseInt(mins) * 60 + parseFloat(secs);
     }
-    return Infinity;
+    // Handle times that are already in seconds (e.g., "41.9")
+    const numValue = parseFloat(timeStr);
+    return isNaN(numValue) ? Infinity : numValue;
   };
 
   const handleSort = (column: SortColumn) => {
@@ -49,8 +51,8 @@ export function IntermediatesSection({ data }: IntermediatesSectionProps) {
       let bVal: any;
 
       if (sortColumn === 'bib') {
-        aVal = a.Bib || 0;
-        bVal = b.Bib || 0;
+        aVal = Number(a.Bib) || 0;
+        bVal = Number(b.Bib) || 0;
       } else if (sortColumn === 'athlete') {
         aVal = a.FamilyName?.toLowerCase() || '';
         bVal = b.FamilyName?.toLowerCase() || '';

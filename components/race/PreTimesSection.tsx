@@ -49,8 +49,8 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
       let bVal: any;
 
       if (sortColumn === 'bib') {
-        aVal = a.Bib || 0;
-        bVal = b.Bib || 0;
+        aVal = Number(a.Bib) || 0;
+        bVal = Number(b.Bib) || 0;
       } else if (sortColumn === 'athlete') {
         aVal = a.FamilyName?.toLowerCase() || '';
         bVal = b.FamilyName?.toLowerCase() || '';

@@ -35,7 +35,9 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
       const [mins, secs] = parts;
       return parseInt(mins) * 60 + parseFloat(secs);
     }
-    return Infinity;
+    // Handle times that are already in seconds (e.g., "41.9")
+    const numValue = parseFloat(timeStr);
+    return isNaN(numValue) ? Infinity : numValue;
   };
 
   const handleShootingSort = (column: ShootingSortColumn) => {
@@ -74,8 +76,8 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
 
       switch (shootingSortColumn) {
         case 'bib':
-          aVal = a.Bib || 0;
-          bVal = b.Bib || 0;
+          aVal = Number(a.Bib) || 0;
+          bVal = Number(b.Bib) || 0;
           break;
         case 'athlete':
           aVal = a.FamilyName?.toLowerCase() || '';
@@ -120,8 +122,8 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
 
       switch (rangeSortColumn) {
         case 'bib':
-          aVal = a.Bib || 0;
-          bVal = b.Bib || 0;
+          aVal = Number(a.Bib) || 0;
+          bVal = Number(b.Bib) || 0;
           break;
         case 'athlete':
           aVal = a.FamilyName?.toLowerCase() || '';
@@ -166,8 +168,8 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
 
       switch (resultsSortColumn) {
         case 'bib':
-          aVal = a.Bib || 0;
-          bVal = b.Bib || 0;
+          aVal = Number(a.Bib) || 0;
+          bVal = Number(b.Bib) || 0;
           break;
         case 'athlete':
           aVal = a.FamilyName?.toLowerCase() || '';
