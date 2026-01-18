@@ -66,5 +66,19 @@
     "shooting": "Tir",
     "time": "Temps",
     "behind": "Écart"
+  },
+  "standings": {
+    "title": "Classements Coupe du Monde",
+    "menStandings": "Coupe du Monde Hommes",
+    "womenStandings": "Coupe du Monde Femmes",
+    "viewFullStandings": "Voir le classement complet",
+    "rank": "Rang",
+    "name": "Nom",
+    "nation": "Nation",
+    "score": "Score",
+    "totalScore": "Score Total",
+    "noStandings": "Aucun classement disponible",
+    "asOf": "Au {date}",
+    "afterEvents": "Après {count} épreuve | Après {count} épreuves"
   }
 }

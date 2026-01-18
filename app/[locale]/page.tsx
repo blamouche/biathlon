@@ -5,6 +5,7 @@ import StatsGrid from '@/components/StatsGrid'
 import MarketTable from '@/components/MarketTable'
 import LiveTimestamp from '@/components/LiveTimestamp'
 import { SharePageButton } from '@/components/SharePageButton'
+import WorldCupRankings from '@/components/WorldCupRankings'
 
 export default async function Home({
   params,
@@ -103,6 +104,9 @@ export default async function Home({
 
         {/* Market Table - Courses actives */}
         <MarketTable competitions={competitions} locale={locale} />
+
+        {/* World Cup Rankings */}
+        <WorldCupRankings locale={locale} />
 
         {/* All Events Grid */}
         <div className="mt-8">

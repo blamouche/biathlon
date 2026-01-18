@@ -66,5 +66,19 @@
     "shooting": "Shooting",
     "time": "Time",
     "behind": "Behind"
+  },
+  "standings": {
+    "title": "World Cup Standings",
+    "menStandings": "Men's World Cup",
+    "womenStandings": "Women's World Cup",
+    "viewFullStandings": "View full standings",
+    "rank": "Rank",
+    "name": "Name",
+    "nation": "Nation",
+    "score": "Score",
+    "totalScore": "Total Score",
+    "noStandings": "No standings available",
+    "asOf": "As of {date}",
+    "afterEvents": "After {count} event | After {count} events"
   }
 }
