@@ -106,33 +106,62 @@ function StandingsCard({ title, standings, color, locale, category }: StandingsC
             <Link
               key={athlete.IBUId}
               href={`/${locale}/athlete/${athlete.IBUId}`}
-              className="grid grid-cols-12 gap-2 p-4 hover:bg-white/5 transition-all font-mono text-sm"
+              className="block p-3 md:p-4 hover:bg-white/5 transition-all font-mono text-sm"
             >
-              {/* Rank */}
-              <div className="col-span-2 flex items-center gap-2">
-                <span className={`${colorClasses.text} font-bold text-xl`}>
-                  {typeof athlete.Rank === 'string' ? athlete.Rank : String(athlete.Rank).padStart(2, '0')}
-                </span>
-                <span className="text-lg">{getMedalEmoji(athlete.Rank)}</span>
+              {/* Mobile Layout */}
+              <div className="flex items-center justify-between md:hidden">
+                <div className="flex items-center gap-2 flex-1">
+                  <span className={`${colorClasses.text} font-bold text-lg`}>
+                    {typeof athlete.Rank === 'string' ? athlete.Rank : String(athlete.Rank).padStart(2, '0')}
+                  </span>
+                  <span className="text-base">{getMedalEmoji(athlete.Rank)}</span>
+                  <div className="ml-1">
+                    <div className="text-white font-semibold text-sm">
+                      {athlete.FamilyName}
+                    </div>
+                    <div className="text-gray-500 text-xs uppercase">
+                      {athlete.Nat}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className={`${colorClasses.accent} font-bold text-base`}>
+                    {athlete.TotalScore}
+                  </div>
+                  <div className="text-gray-600 text-xs uppercase">
+                    PTS
+                  </div>
+                </div>
               </div>
 
-              {/* Name & Nation */}
-              <div className="col-span-7">
-                <div className="text-white font-semibold">
-                  {athlete.GivenName} {athlete.FamilyName}
+              {/* Desktop Layout */}
+              <div className="hidden md:grid md:grid-cols-12 gap-2 items-center">
+                {/* Rank */}
+                <div className="col-span-2 flex items-center gap-2">
+                  <span className={`${colorClasses.text} font-bold text-xl`}>
+                    {typeof athlete.Rank === 'string' ? athlete.Rank : String(athlete.Rank).padStart(2, '0')}
+                  </span>
+                  <span className="text-lg">{getMedalEmoji(athlete.Rank)}</span>
                 </div>
-                <div className="text-gray-500 text-xs uppercase mt-0.5">
-                  {athlete.Nat}
-                </div>
-              </div>
 
-              {/* Score */}
-              <div className="col-span-3 text-right">
-                <div className={`${colorClasses.accent} font-bold text-lg`}>
-                  {athlete.TotalScore}
+                {/* Name & Nation */}
+                <div className="col-span-7">
+                  <div className="text-white font-semibold">
+                    {athlete.GivenName} {athlete.FamilyName}
+                  </div>
+                  <div className="text-gray-500 text-xs uppercase mt-0.5">
+                    {athlete.Nat}
+                  </div>
                 </div>
-                <div className="text-gray-600 text-xs uppercase">
-                  PTS
+
+                {/* Score */}
+                <div className="col-span-3 text-right">
+                  <div className={`${colorClasses.accent} font-bold text-lg`}>
+                    {athlete.TotalScore}
+                  </div>
+                  <div className="text-gray-600 text-xs uppercase">
+                    PTS
+                  </div>
                 </div>
               </div>
             </Link>
