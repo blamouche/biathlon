@@ -6,10 +6,10 @@ export default createMiddleware({
   locales,
 
   // Default language
-  defaultLocale: 'en',
+  defaultLocale: 'fr',
 
-  // Always include locale prefix in URL
-  localePrefix: 'always',
+  // Never include locale prefix in URL (single language app)
+  localePrefix: 'never',
 });
 
 export const config = {
