@@ -186,11 +186,19 @@ export class BiathlonAPI {
 
   /**
    * Fetch World Cup overall standings for a category
+   * @param categoryId - 'SM' for Senior Men, 'SW' for Senior Women
+   * @param seasonId - Format: "2526" for 2025-2026
    */
   static async getStandings(categoryId: string = 'SM', seasonId: string = '2526') {
     try {
+      // Build the CupId based on category and season
+      // Format: BT{season}SWRLCP__{category}TS
+      // Example: BT2526SWRLCP__SMTS for Men's World Cup Total Score 2025-2026
+      const categoryCode = categoryId === 'SM' ? 'SMTS' : 'SWTS';
+      const cupId = `BT${seasonId}SWRLCP__${categoryCode}`;
+
       const response = await fetch(
-        `${API_BASE}/Standings?SeasonId=${seasonId}&Level=1&CategoryId=${categoryId}`,
+        `${API_BASE}/CupResults?CupId=${cupId}`,
         {
           next: { revalidate: 3600 }, // Cache for 1 hour
         }
@@ -201,7 +209,20 @@ export class BiathlonAPI {
       }
 
       const data = await response.json();
-      return data || [];
+
+      // The API might return data in different structures
+      if (Array.isArray(data)) {
+        return data;
+      } else if (data?.Standings && Array.isArray(data.Standings)) {
+        return data.Standings;
+      } else if (data?.Data && Array.isArray(data.Data)) {
+        return data.Data;
+      } else if (data?.Results && Array.isArray(data.Results)) {
+        return data.Results;
+      }
+
+      console.log('Unexpected standings data structure for CupId:', cupId, data);
+      return [];
     } catch (error) {
       console.error('Error fetching standings:', error);
       return [];
