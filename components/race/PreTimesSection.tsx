@@ -99,8 +99,8 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
   );
 
   return (
-    <div className="overflow-x-auto p-6">
-      <table className="w-full border-collapse">
+    <div className="overflow-x-auto p-3 md:p-6">
+      <table className="w-full border-collapse text-xs md:text-sm">
         <thead>
           <tr className="bg-gray-800 text-gray-100">
             <SortableHeader
@@ -115,7 +115,7 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
               onClick={() => handleSort('athlete')}
               active={sortColumn === 'athlete'}
               direction={sortDirection}
-              className="text-left sticky left-[60px] bg-gray-800 z-10"
+              className="text-left sticky left-[45px] md:left-[60px] bg-gray-800 z-10"
             >
               ATHLETE
             </SortableHeader>
@@ -123,7 +123,7 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
               onClick={() => handleSort('nat')}
               active={sortColumn === 'nat'}
               direction={sortDirection}
-              className="text-left sticky left-[250px] bg-gray-800 z-10"
+              className="text-left sticky left-[145px] md:left-[250px] bg-gray-800 z-10"
             >
               NAT
             </SortableHeader>
@@ -131,9 +131,9 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
               onClick={() => handleSort('position')}
               active={sortColumn === 'position'}
               direction={sortDirection}
-              className="text-center sticky left-[310px] bg-gray-800 z-10"
+              className="text-center sticky left-[195px] md:left-[310px] bg-gray-800 z-10"
             >
-              POSITION
+              POS
             </SortableHeader>
             {data.Points.map((point, index) => (
               <SortableHeader
@@ -160,27 +160,28 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
               key={athlete.IBUId}
               className={idx % 2 === 0 ? 'bg-gray-900' : 'bg-gray-800'}
             >
-              <td className="border border-gray-700 px-2 py-2 font-bold text-cyan-400 sticky left-0 bg-inherit z-10">
+              <td className="border border-gray-700 px-1.5 md:px-2 py-2 font-bold text-cyan-400 sticky left-0 bg-inherit z-10">
                 {athlete.Bib}
               </td>
-              <td className="border border-gray-700 px-2 py-2 sticky left-[60px] bg-inherit z-10">
-                <div className="text-sm">
+              <td className="border border-gray-700 px-1.5 md:px-2 py-2 sticky left-[45px] md:left-[60px] bg-inherit z-10">
+                <div className="text-xs md:text-sm">
                   <div className="font-semibold text-white">
                     {athlete.FamilyName.toUpperCase()}
                   </div>
-                  <div className="text-gray-400">{athlete.GivenName}</div>
+                  <div className="text-gray-400 hidden md:block">{athlete.GivenName}</div>
                 </div>
               </td>
-              <td className="border border-gray-700 px-2 py-2 sticky left-[250px] bg-inherit z-10">
+              <td className="border border-gray-700 px-1.5 md:px-2 py-2 sticky left-[145px] md:left-[250px] bg-inherit z-10">
                 <span className="font-semibold text-gray-100">{athlete.Nat}</span>
               </td>
-              <td className="border border-gray-700 px-2 py-2 text-center text-gray-100 sticky left-[310px] bg-inherit z-10">
-                {athlete.CurrentDistance ? `${athlete.CurrentDistance}km` : '-'}
+              <td className="border border-gray-700 px-1.5 md:px-2 py-2 text-center text-gray-100 sticky left-[195px] md:left-[310px] bg-inherit z-10">
+                <span className="hidden md:inline">{athlete.CurrentDistance ? `${athlete.CurrentDistance}km` : '-'}</span>
+                <span className="md:hidden">{athlete.CurrentDistance || '-'}</span>
               </td>
               {data.Points.map((point, index) => (
                 <td
                   key={index}
-                  className="border border-gray-700 px-3 py-2 text-center text-gray-100"
+                  className="border border-gray-700 px-2 md:px-3 py-2 text-center text-gray-100"
                 >
                   {athlete.PreTimes[point.Distance] || '-'}
                 </td>

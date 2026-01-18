@@ -189,8 +189,8 @@ export function RaceTabs({
               </div>
             ) : (
               <>
-                {/* Table Header */}
-                <div className="bg-gray-900/50 px-6 py-3 border-b border-gray-700/50">
+                {/* Table Header - Desktop only */}
+                <div className="hidden md:block bg-gray-900/50 px-6 py-3 border-b border-gray-700/50">
                   <div className="grid grid-cols-12 gap-4 text-gray-500 font-bold text-xs uppercase tracking-wider">
                     <SortableHeader column="rank" className="col-span-1 text-center">
                       RANK
@@ -246,46 +246,93 @@ export function RaceTabs({
                     return (
                       <div
                         key={result.IBUId || index}
-                        className={`grid grid-cols-12 gap-4 px-6 py-4 transition-colors ${rowBg}`}
+                        className={`p-3 md:px-6 md:py-4 transition-colors ${rowBg}`}
                       >
-                        <div
-                          className={`col-span-1 text-center font-bold ${rankColor}`}
-                        >
-                          {rankDisplay}
-                        </div>
-                        <div className="col-span-1 text-center text-gray-500">
-                          #{result.Bib}
-                        </div>
-                        <div className="col-span-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">
-                              {getFlagEmoji(result.Nat)}
-                            </span>
-                            <div>
-                              <Link
-                                href={`/${locale}/athlete/${result.IBUId}`}
-                                className="hover:text-cyan-400 transition-colors"
-                              >
+                        {/* Mobile Layout */}
+                        <div className="flex flex-col gap-2 md:hidden">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className={`font-bold ${rankColor}`}>
+                                {rankDisplay}
+                              </span>
+                              <span className="text-gray-500 text-xs">#{result.Bib}</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-mono text-white font-bold text-sm">
+                                {result.TotalTime || '-'}
+                              </div>
+                              <div className="text-gray-400 font-mono text-xs">
+                                {result.Behind ? `+${result.Behind}` : '-'}
+                              </div>
+                            </div>
+                          </div>
+
+                          <Link
+                            href={`/${locale}/athlete/${result.IBUId}`}
+                            className="hover:text-cyan-400 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">{getFlagEmoji(result.Nat)}</span>
+                              <div>
                                 <div className="font-semibold text-white hover:underline">
                                   {result.FamilyName}
                                 </div>
                                 <div className="text-xs text-gray-500">
                                   {result.GivenName}
                                 </div>
-                              </Link>
+                              </div>
                             </div>
+                          </Link>
+
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">SHOOTING</span>
+                            <span className="inline-flex items-center justify-center px-2 py-1 bg-gray-800/50 text-cyan-400 font-mono text-xs border border-gray-700/50">
+                              {result.ShootingTotal || '-'}
+                            </span>
                           </div>
                         </div>
-                        <div className="col-span-2 text-center">
-                          <span className="inline-flex items-center justify-center px-3 py-1 bg-gray-800/50 text-cyan-400 font-mono text-sm border border-gray-700/50">
-                            {result.ShootingTotal || '-'}
-                          </span>
-                        </div>
-                        <div className="col-span-2 text-center font-mono text-white font-bold">
-                          {result.TotalTime || '-'}
-                        </div>
-                        <div className="col-span-2 text-center text-gray-400 font-mono text-sm">
-                          {result.Behind ? `+${result.Behind}` : '-'}
+
+                        {/* Desktop Layout */}
+                        <div className="hidden md:grid md:grid-cols-12 gap-4 items-center">
+                          <div
+                            className={`col-span-1 text-center font-bold ${rankColor}`}
+                          >
+                            {rankDisplay}
+                          </div>
+                          <div className="col-span-1 text-center text-gray-500">
+                            #{result.Bib}
+                          </div>
+                          <div className="col-span-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">
+                                {getFlagEmoji(result.Nat)}
+                              </span>
+                              <div>
+                                <Link
+                                  href={`/${locale}/athlete/${result.IBUId}`}
+                                  className="hover:text-cyan-400 transition-colors"
+                                >
+                                  <div className="font-semibold text-white hover:underline">
+                                    {result.FamilyName}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {result.GivenName}
+                                  </div>
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-span-2 text-center">
+                            <span className="inline-flex items-center justify-center px-3 py-1 bg-gray-800/50 text-cyan-400 font-mono text-sm border border-gray-700/50">
+                              {result.ShootingTotal || '-'}
+                            </span>
+                          </div>
+                          <div className="col-span-2 text-center font-mono text-white font-bold">
+                            {result.TotalTime || '-'}
+                          </div>
+                          <div className="col-span-2 text-center text-gray-400 font-mono text-sm">
+                            {result.Behind ? `+${result.Behind}` : '-'}
+                          </div>
                         </div>
                       </div>
                     );

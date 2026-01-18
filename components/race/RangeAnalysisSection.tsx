@@ -224,14 +224,14 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
   );
 
   return (
-    <div className="overflow-x-auto p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="overflow-x-auto p-3 md:p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Shooting Times Section */}
         <div>
-          <h3 className="text-lg font-bold bg-blue-600 text-white px-4 py-2 mb-2 rounded-t">
+          <h3 className="text-sm md:text-lg font-bold bg-blue-600 text-white px-3 md:px-4 py-2 mb-2 rounded-t">
             SHOOTING TIME
           </h3>
-          <table className="w-full border-collapse text-sm">
+          <table className="w-full border-collapse text-xs md:text-sm">
             <thead>
               <tr className="bg-gray-800 text-gray-100">
                 <SortableHeader
@@ -330,10 +330,10 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
 
         {/* Range Times Section */}
         <div>
-          <h3 className="text-lg font-bold bg-green-600 text-white px-4 py-2 mb-2 rounded-t">
+          <h3 className="text-sm md:text-lg font-bold bg-green-600 text-white px-3 md:px-4 py-2 mb-2 rounded-t">
             RANGE TIME
           </h3>
-          <table className="w-full border-collapse text-sm">
+          <table className="w-full border-collapse text-xs md:text-sm">
             <thead>
               <tr className="bg-gray-800 text-gray-100">
                 <SortableHeader
@@ -432,10 +432,10 @@ export function RangeAnalysisSection({ data }: RangeAnalysisSectionProps) {
 
         {/* Shooting Results Section */}
         <div className="lg:col-span-2">
-          <h3 className="text-lg font-bold bg-yellow-600 text-white px-4 py-2 mb-2 rounded-t">
+          <h3 className="text-sm md:text-lg font-bold bg-yellow-600 text-white px-3 md:px-4 py-2 mb-2 rounded-t">
             SHOOTING RESULTS
           </h3>
-          <table className="w-full border-collapse text-sm">
+          <table className="w-full border-collapse text-xs md:text-sm">
             <thead>
               <tr className="bg-gray-800 text-gray-100">
                 <SortableHeader
