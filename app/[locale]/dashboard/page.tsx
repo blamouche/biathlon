@@ -16,39 +16,42 @@ export default async function DashboardPage({
 
   const events = await BiathlonAPI.getEvents()
 
-  // Find current live events (current world cup stage)
+  // Find the currently active World Cup stage
+  // A stage is active until the end of the day of its EndDate
   const now = new Date()
-  const currentLiveEvents = events.filter(event => {
+  const activeEvent = events.find(event => {
     const start = new Date(event.StartDate)
+    // Set end time to end of day (23:59:59)
     const end = new Date(event.EndDate)
+    end.setHours(23, 59, 59, 999)
     return now >= start && now <= end
   })
 
-  // Get competitions for current live events (current world cup stage)
-  // If no events are currently live, fall back to all upcoming/active events
-  const eventsToShow = currentLiveEvents.length > 0
-    ? currentLiveEvents
-    : events.filter(event => {
-        const end = new Date(event.EndDate)
-        return end >= now
+  // Get competitions only for the active event
+  let competitions: any[] = []
+  let nextEvent = null
+
+  if (activeEvent) {
+    // Fetch races for the active stage only
+    const comps = await BiathlonAPI.getCompetitions(activeEvent.EventId)
+    competitions = comps.map(comp => ({
+      ...comp,
+      eventName: activeEvent.Description,
+      eventId: activeEvent.EventId
+    }))
+  } else {
+    // No active event, find the next upcoming event
+    nextEvent = events
+      .filter(event => {
+        const start = new Date(event.StartDate)
+        return start > now
       })
-
-  const allCompetitions = await Promise.all(
-    eventsToShow.map(async event => {
-      const competitions = await BiathlonAPI.getCompetitions(event.EventId)
-      return competitions.map(comp => ({
-        ...comp,
-        eventName: event.Description,
-        eventId: event.EventId
-      }))
-    })
-  )
-
-  const competitions = allCompetitions.flat()
+      .sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime())[0]
+  }
 
   // Calculate statistics
   const totalEvents = events.length
-  const liveEventsCount = currentLiveEvents.length
+  const liveEventsCount = activeEvent ? 1 : 0
   const totalCompetitions = competitions.length
   const liveCompetitions = competitions.filter(comp => {
     const status = BiathlonAPI.getRaceStatus(comp.StartTime)
@@ -98,7 +101,11 @@ export default async function DashboardPage({
         />
 
         {/* Market Table - Courses actives */}
-        <MarketTable competitions={competitions} locale={locale} />
+        <MarketTable
+          competitions={competitions}
+          locale={locale}
+          nextEvent={nextEvent}
+        />
 
         {/* All Events Grid */}
         <div className="mt-8">
