@@ -58,8 +58,8 @@ export function PreTimesSection({ data }: PreTimesSectionProps) {
         aVal = a.Nat?.toLowerCase() || '';
         bVal = b.Nat?.toLowerCase() || '';
       } else if (sortColumn === 'position') {
-        aVal = distanceToNumber(a.CurrentDistance);
-        bVal = distanceToNumber(b.CurrentDistance);
+        aVal = a.CurrentDistance ?? Infinity;
+        bVal = b.CurrentDistance ?? Infinity;
       } else {
         // Sorting by checkpoint distance
         aVal = distanceToNumber(a.PreTimes[sortColumn] || null);
