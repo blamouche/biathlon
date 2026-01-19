@@ -3,6 +3,7 @@ import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { formatDate } from '@/lib/utils/dateTime';
 import CompetitionList from '@/components/CompetitionList';
 import { SharePageButton } from '@/components/SharePageButton';
+import packageJson from '@/package.json';
 
 interface EventPageProps {
   params: Promise<{
@@ -127,6 +128,7 @@ export default async function EventPage({ params }: EventPageProps) {
             <p>DATA SOURCE: BIATHLONRESULTS.COM • EVENT ID: {eventId}</p>
             <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
             <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
+            <p>VERSION {packageJson.version}</p>
           </div>
         </div>
       </div>

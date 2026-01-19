@@ -6,6 +6,7 @@ import MarketTable from '@/components/MarketTable'
 import LiveTimestamp from '@/components/LiveTimestamp'
 import { SharePageButton } from '@/components/SharePageButton'
 import WorldCupRankings from '@/components/WorldCupRankings'
+import packageJson from '@/package.json'
 
 export default async function Home({
   params,
@@ -224,6 +225,7 @@ export default async function Home({
             <p>DATA SOURCE: BIATHLONRESULTS.COM • UPDATE FREQUENCY: 30s</p>
             <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
             <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
+            <p>VERSION {packageJson.version}</p>
           </div>
         </div>
       </div>

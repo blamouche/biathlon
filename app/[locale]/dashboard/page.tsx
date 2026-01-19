@@ -5,6 +5,7 @@ import LiveTicker from '@/components/LiveTicker'
 import StatsGrid from '@/components/StatsGrid'
 import MarketTable from '@/components/MarketTable'
 import { SharePageButton } from '@/components/SharePageButton'
+import packageJson from '@/package.json'
 
 export default async function DashboardPage({
   params,
@@ -187,6 +188,7 @@ export default async function DashboardPage({
             <p>DATA SOURCE: BIATHLONRESULTS.COM • UPDATE FREQUENCY: 30s</p>
             <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
             <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
+            <p>VERSION {packageJson.version}</p>
           </div>
         </div>
       </div>
