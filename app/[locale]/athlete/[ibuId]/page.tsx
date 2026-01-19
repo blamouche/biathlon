@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { BiathlonAPI } from '@/lib/api/biathlon-api';
 import { FormattedDateTime } from '@/components/FormattedDateTime';
 import { SharePageButton } from '@/components/SharePageButton';
+import packageJson from '@/package.json';
 
 interface AthletePageProps {
   params: Promise<{
@@ -274,6 +275,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
             <p>DATA SOURCE: BIATHLONRESULTS.COM • ATHLETE ID: {ibuId}</p>
             <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
             <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
+            <p>VERSION {packageJson.version}</p>
           </div>
         </div>
       </div>
