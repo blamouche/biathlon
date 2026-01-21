@@ -134,6 +134,11 @@ export default function CompetitionList({
                   href={`/${locale}/event/${eventId}/race/${competition.RaceId}`}
                   className="hover:text-cyan-400 transition-colors"
                 >
+                  {eventLocation && (
+                    <div className="text-gray-400 text-xs mb-1">
+                      {eventName} - {eventLocation}
+                    </div>
+                  )}
                   <div className="text-white font-bold text-base">{competition.Description}</div>
                   <div className="text-gray-500 text-xs mt-1">
                     {competition.Short} • {competition.DisciplineId}
@@ -200,6 +205,11 @@ export default function CompetitionList({
                   href={`/${locale}/event/${eventId}/race/${competition.RaceId}`}
                   className="col-span-4 hover:text-cyan-400 transition-colors"
                 >
+                  {eventLocation && (
+                    <div className="text-gray-400 text-xs mb-1">
+                      {eventName} - {eventLocation}
+                    </div>
+                  )}
                   <div className="text-white font-bold">{competition.Description}</div>
                   <div className="text-gray-500 text-xs mt-1">
                     {competition.Short} • {competition.DisciplineId}

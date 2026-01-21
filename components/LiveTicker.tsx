@@ -9,6 +9,7 @@ interface Competition {
   StartTime: string
   eventName: string
   eventId: string
+  eventLocation?: string
 }
 
 export default function LiveTicker({
@@ -43,7 +44,7 @@ export default function LiveTicker({
           {liveCompetitions.map((comp, index) => (
             <div key={comp.RaceId} className="flex items-center gap-2 whitespace-nowrap">
               <span className="text-green-400 text-xl animate-pulse">▶</span>
-              <span className="text-green-400 font-bold">{comp.eventName}</span>
+              <span className="text-green-400 font-bold">{comp.eventName}{comp.eventLocation && ` - ${comp.eventLocation}`}</span>
               <span className="text-gray-500">|</span>
               <span className="text-white">{comp.Description}</span>
               <span className="text-gray-500">|</span>

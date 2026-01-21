@@ -11,6 +11,7 @@ interface Competition {
   StartTime: string
   eventName: string
   eventId: string
+  eventLocation?: string
 }
 
 interface Event {
@@ -245,7 +246,7 @@ export default function MarketTable({
                     className="hover:text-cyan-400 transition-colors"
                   >
                     <div className="text-white font-bold text-sm">
-                      {comp.eventName}
+                      {comp.eventName}{comp.eventLocation && ` - ${comp.eventLocation}`}
                     </div>
                     <div className="text-gray-400 text-xs mt-1">
                       {comp.Description}
@@ -313,7 +314,7 @@ export default function MarketTable({
                     className="col-span-4 hover:text-cyan-400 transition-colors"
                   >
                     <div className="text-white font-bold text-sm">
-                      {comp.eventName}
+                      {comp.eventName}{comp.eventLocation && ` - ${comp.eventLocation}`}
                     </div>
                     <div className="text-gray-400 text-xs mt-1">
                       {comp.Description}
