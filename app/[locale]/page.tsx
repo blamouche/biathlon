@@ -6,6 +6,9 @@ import MarketTable from '@/components/MarketTable'
 import LiveTimestamp from '@/components/LiveTimestamp'
 import { SharePageButton } from '@/components/SharePageButton'
 import WorldCupRankings from '@/components/WorldCupRankings'
+import WaveChart from '@/components/WaveChart'
+import CompactStatsCard from '@/components/CompactStatsCard'
+import { BiathlonMapWrapper } from '@/components/BiathlonMapWrapper'
 import packageJson from '@/package.json'
 
 export default async function Home({
@@ -60,6 +63,10 @@ export default async function Home({
     return status === 'live'
   }).length
 
+  // Calculate percentages for the compact stats
+  const eventPercentage = totalEvents > 0 ? Math.round((liveEventsCount / totalEvents) * 100) : 0
+  const racePercentage = totalCompetitions > 0 ? Math.round((liveCompetitions / totalCompetitions) * 100) : 0
+
   return (
     <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
       {/* Header terminal style */}
@@ -84,17 +91,48 @@ export default async function Home({
         </div>
       </div>
 
-      {/* Live Ticker */}
-      <LiveTicker competitions={competitions} locale={locale} />
+      {/* Wave Chart */}
+      <WaveChart />
 
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Grid */}
-        <StatsGrid
-          totalEvents={totalEvents}
-          liveEvents={liveEventsCount}
-          totalCompetitions={totalCompetitions}
-          liveCompetitions={liveCompetitions}
-        />
+        {/* Main Grid: Stats Cards + Map */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+          {/* Left Column - Stats Cards */}
+          <div className="lg:col-span-1 grid grid-cols-1 gap-4">
+            <CompactStatsCard
+              label="TOTAL EVENT"
+              value={totalEvents}
+              percentage={eventPercentage}
+              color="cyan"
+            />
+            <CompactStatsCard
+              label="TOTAL RACES"
+              value={totalCompetitions}
+              percentage={racePercentage}
+              color="purple"
+            />
+            <CompactStatsCard
+              label="LIVE EVENT"
+              value={liveEventsCount}
+              color="green"
+            />
+            <CompactStatsCard
+              label="LIVE RACES"
+              value={liveCompetitions}
+              color="yellow"
+            />
+          </div>
+
+          {/* Right Column - Map */}
+          <div className="lg:col-span-2">
+            <div className="border border-cyan-500/30 bg-black/40 p-4 h-full min-h-[500px]">
+              <h2 className="text-cyan-400 text-lg font-bold tracking-wider mb-4">
+                [MAP]
+              </h2>
+              <BiathlonMapWrapper events={events} />
+            </div>
+          </div>
+        </div>
 
         {/* Market Table - Courses actives */}
         <MarketTable
