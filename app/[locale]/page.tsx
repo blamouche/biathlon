@@ -63,9 +63,15 @@ export default async function Home({
     return status === 'live'
   }).length
 
-  // Calculate percentages for the compact stats
-  const eventPercentage = totalEvents > 0 ? Math.round((liveEventsCount / totalEvents) * 100) : 0
-  const racePercentage = totalCompetitions > 0 ? Math.round((liveCompetitions / totalCompetitions) * 100) : 0
+  // Calculate percentages for the compact stats (completed vs remaining)
+  const completedEvents = events.filter(event => new Date(event.EndDate) < new Date()).length
+  const eventPercentage = totalEvents > 0 ? Math.round((completedEvents / totalEvents) * 100) : 0
+
+  const completedCompetitions = competitions.filter(comp => {
+    const status = BiathlonAPI.getRaceStatus(comp.StartTime)
+    return status === 'finished'
+  }).length
+  const racePercentage = totalCompetitions > 0 ? Math.round((completedCompetitions / totalCompetitions) * 100) : 0
 
   return (
     <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
