@@ -1,6 +1,6 @@
 {
   "name": "biathlon",
-  "version": "1.26.0",
+  "version": "1.27.0",
   "description": "App for live biathlon results",
   "scripts": {
     "dev": "next dev",

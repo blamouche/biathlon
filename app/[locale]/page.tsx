@@ -38,7 +38,8 @@ export default async function Home({
     competitions = comps.map(comp => ({
       ...comp,
       eventName: activeEvent.Description,
-      eventId: activeEvent.EventId
+      eventId: activeEvent.EventId,
+      eventLocation: activeEvent.ShortDescription
     }))
   } else {
     // No active event, find the next upcoming event
