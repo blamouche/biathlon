@@ -51,6 +51,8 @@ export default async function Home({
       .sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime())[0]
   }
 
+  const seasonEnded = !activeEvent && !nextEvent
+
   // Calculate statistics
   const totalEvents = events.length
   const liveEventsCount = activeEvent ? 1 : 0
@@ -59,6 +61,44 @@ export default async function Home({
     const status = BiathlonAPI.getRaceStatus(comp.StartTime)
     return status === 'live'
   }).length
+
+  if (seasonEnded) {
+    return (
+      <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
+        <div className="border-b border-green-500/30 bg-black/40 backdrop-blur">
+          <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-green-400 tracking-wider">
+              BIATHLON LIVE MONITORING
+            </h1>
+            <p className="text-xs text-gray-500 mt-1">REAL-TIME DATA FEED • IBU OFFICIAL SOURCE</p>
+          </div>
+        </div>
+
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <div className="inline-block border border-green-500/30 bg-black/40 px-6 py-8">
+            <p className="text-green-400 text-sm tracking-widest mb-3">SEASON STATUS</p>
+            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+              La saison est terminée
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+              Merci d'avoir suivi la saison avec nous. Le tableau de bord reviendra dès l'ouverture de la prochaine étape.
+            </p>
+          </div>
+        </div>
+
+        <div className="border-t border-green-500/30 bg-black/40">
+          <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="text-center text-gray-500 text-xs space-y-1">
+              <p>DATA SOURCE: BIATHLONRESULTS.COM • UPDATE FREQUENCY: 30s</p>
+              <p>© 2026 BIATHLON MONITORING SYSTEM • ALL RIGHTS RESERVED</p>
+              <p>DEVELOPED BY <a href="https://lamouche.fr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 hover:underline">BENOIT</a></p>
+              <p>VERSION {packageJson.version}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
