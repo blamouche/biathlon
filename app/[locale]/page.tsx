@@ -84,6 +84,9 @@ export default async function Home({
             <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
               Merci d'avoir suivi la saison avec nous. Le tableau de bord reviendra dès l'ouverture de la prochaine étape.
             </p>
+            <p className="text-gray-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed mt-4">
+              Inscris-toi pour recevoir l'annonce de la reprise, les dates clés et nos résumés exclusifs dès que la nouvelle saison démarre.
+            </p>
             <div className="mt-8 flex justify-center">
               <div className="ml-embedded" data-form="K255Og"></div>
             </div>
