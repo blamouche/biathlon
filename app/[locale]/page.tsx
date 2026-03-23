@@ -103,13 +103,6 @@ ml('account', '712166');
 `,
           }}
         />
-      </div>
-    )
-  }
-
-  return (
-    <div className="min-h-screen bg-[#0a0e1a] text-gray-100 font-mono">
-
         <div className="border-t border-green-500/30 bg-black/40">
           <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="text-center text-gray-500 text-xs space-y-1">
